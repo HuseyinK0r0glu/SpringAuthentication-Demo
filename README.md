@@ -16,19 +16,16 @@ This project demonstrates an OAuth2 authentication flow with both traditional lo
 
 ### Backend Setup:
 1. Clone the repository.
-2. In the backend directory, create a file named `application.properties` to store sensitive information like your OAuth2 client credentials, database configurations, etc.
+2. In the backend directory, create a file named `application.properties` to store sensitive information like your OAuth2 client credentials, database configurations,api keys for mail senders, etc.
 
 Example of `application.properties` content:
 
 properties
 # OAuth2 Client Credentials
-oauth.client.id=your-client-id
-oauth.client.secret=your-client-secret
-oauth.client.authorizationUri=https://oauth.provider.com/authorize
-oauth.client.tokenUri=https://oauth.provider.com/token
-oauth.client.redirectUri=http://localhost:8080/login/oauth2/code
+- oauth.client.id=your-client-id
+- oauth.client.secret=your-client-secret
 
-# Database Configuration (Example)
-spring.datasource.url=jdbc:mysql://localhost:3306/yourdatabase
-spring.datasource.username=your-username
-spring.datasource.password=your-password
+# Database Configuration
+- spring.datasource.url=jdbc:mysql://localhost:3306/yourdatabase
+- spring.datasource.username=your-username
+- spring.datasource.password=your-password
