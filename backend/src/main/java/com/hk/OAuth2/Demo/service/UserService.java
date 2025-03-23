@@ -51,8 +51,7 @@ public class UserService {
 
         User user = new User(userName,email,provider,oauth2Id,picture);
 
-        // normally oauth2 login does not have a password so add a default password
-        user.setPassword(passwordEncoder.encode("defaultpassword"));
+        user.setVerified(1);
 
         return userRepository.save(user);
     }

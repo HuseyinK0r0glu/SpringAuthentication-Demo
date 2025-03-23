@@ -119,17 +119,23 @@ public class AuthController {
         // loginRequest contains email and password
 
         try{
+            User user = userService.findByEmail(loginRequest.getEmail());
+            Map<String,Object> response = new HashMap<>();
+
+            if (user.getVerified() == 0) {
+                response.put("error", "Email is not verified. Please verify your email before logging in.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+
+            if(user.getProvider() != null){
+                response.put("error", "Please log in using " + user.getProvider());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
             );
 
-            User user = userService.findByEmail(loginRequest.getEmail());
-
-            if (user.getVerified() == 0) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email is not verified. Please verify your email before logging in.");
-            }
-
-            Map<String,Object> response = new HashMap<>();
             response.put("message","Login Successful");
             response.put("id" , user.getId());
             response.put("email",user.getEmail());

@@ -34,8 +34,9 @@ function LoginPage() {
         credentials: 'include'
       });
 
+      const data = await response.json();
+
       if(response.ok){
-        const data = await response.json();
         console.log(data);
         setUser(data);
         setError("");
@@ -45,12 +46,11 @@ function LoginPage() {
 
         navigate("/home");
       }else {
-        const errorText = await response.text();  
-        console.error(errorText);  
-        setError("Invalid username or password");
+        setError(data.error || "Login failed");
       }
 
     }catch(error){
+      console.log(error.message);
       setError('Invalid username or password');
     }
 
