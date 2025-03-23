@@ -36,6 +36,10 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public User findById(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
     // for oauth2 logins
     public User createUser(String userName , String email , String provider , String oauth2Id , String picture) {
 

@@ -129,8 +129,9 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email is not verified. Please verify your email before logging in.");
             }
 
-            Map<String,String> response = new HashMap<>();
+            Map<String,Object> response = new HashMap<>();
             response.put("message","Login Successful");
+            response.put("id" , user.getId());
             response.put("email",user.getEmail());
             response.put("password",user.getPassword());
 
