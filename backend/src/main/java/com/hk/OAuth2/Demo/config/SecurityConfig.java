@@ -29,6 +29,8 @@ public class SecurityConfig {
                             authorizeRequests.requestMatchers("/",
                                     "/api/auth/**",
                                     "/api/auth/verify",
+                                    "/api/users/**",
+                                    "/api/users/3/update-username",
                                     "/error",
                                     "/actuator/health",
                                     "/actuator/metrics" ).permitAll();

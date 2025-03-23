@@ -37,6 +37,11 @@ public class UserController {
             return ResponseEntity.badRequest().body(response);
         }
 
+        if(user.getUsername().equals(updateUserNameRequest.getUsername())){
+            response.put("error", "New username cannot be the same as the current username.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
         User existingUser = userService.findByUsername(updateUserNameRequest.getUsername());
         if(existingUser != null && !existingUser.getId().equals(user.getId())) {
             response.put("error", "Username is already in use.");
@@ -61,6 +66,11 @@ public class UserController {
 
         if(!updatePasswordRequest.getPassword().equals(updatePasswordRequest.getConfirmPassword())) {
             response.put("error", "Passwords do not match.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if(passwordEncoder.matches(updatePasswordRequest.getPassword(), user.getPassword())) {
+            response.put("error", "New password cannot be the same as the current password.");
             return ResponseEntity.badRequest().body(response);
         }
 

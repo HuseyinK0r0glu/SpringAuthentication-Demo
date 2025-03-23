@@ -133,6 +133,7 @@ public class AuthController {
             response.put("message","Login Successful");
             response.put("id" , user.getId());
             response.put("email",user.getEmail());
+            response.put("name",user.getUsername());
             response.put("password",user.getPassword());
 
             return ResponseEntity.ok(response);
