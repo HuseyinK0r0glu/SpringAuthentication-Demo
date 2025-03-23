@@ -5,6 +5,8 @@ import HomePage from './screens/HomePage';
 import LoadingPage from './screens/LoadingPage';
 import SignUpPage from './screens/SignUpPage';
 import VerifyEmailPage from './screens/VerifyEmailPage';
+import UpdatePasswordPage from './screens/updateFlow/updatePasswordPage';
+import UpdateUsernamePage from './screens/updateFlow/updateUserNamePage';
 import { Navbar } from './Navbar';
 import { Provider as UserProvider } from './context/UserContext';
 
@@ -23,6 +25,8 @@ function App() {
           <Route path="/loading" element={<LoadingPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/verify" element={<VerifyEmailPage />}/>
+          <Route path="/update-username" element={<UpdateUsernamePage />}/>
+          <Route path="/update-password" element={<UpdatePasswordPage />}/>
         </Routes>
       </Router>
     </UserProvider>

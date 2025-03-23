@@ -7,10 +7,10 @@ const LoadingPage = () => {
     const navigate = useNavigate();
     const {setUser} = useContext(UserContext);
 
-    const handleResponse = (response) => {
-        if(response && response.id){
-          setUser(response);
-          localStorage.setItem("user" , JSON.stringify(response));
+    const handleResponse = (data) => {
+        if(data && data.id){
+          setUser(data);
+          localStorage.setItem("user" , JSON.stringify(data));
           navigate("/home");
         }
       };

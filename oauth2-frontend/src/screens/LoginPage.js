@@ -15,7 +15,6 @@ function LoginPage() {
   // oauth2 login
   const handleLogin = (provider) => {   
     window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
-    
   };
 
   const handleTraditionalLogin = async (e) => {
@@ -37,11 +36,12 @@ function LoginPage() {
 
       if(response.ok){
         const data = await response.json();
+        console.log(data);
         setUser(data);
         setError("");
 
         // add local storage to store the user  
-        localStorage.setItem("user", data);
+        localStorage.setItem("user", JSON.stringify(data));
 
         navigate("/home");
       }else {
