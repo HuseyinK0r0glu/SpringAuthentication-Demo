@@ -7,6 +7,7 @@ import SignUpPage from './screens/SignUpPage';
 import VerifyEmailPage from './screens/VerifyEmailPage';
 import UpdatePasswordPage from './screens/updateFlow/updatePasswordPage';
 import UpdateUsernamePage from './screens/updateFlow/updateUserNamePage';
+import SettingsPage from './screens/SettingsPage';
 import { Navbar } from './Navbar';
 import { Provider as UserProvider } from './context/UserContext';
 
@@ -20,6 +21,7 @@ function App() {
           {/* Redirect "/" to "/login" */}
           <Route path="/" element={<Navigate to="/home" />} />
 
+          <Route path="/settings" element={<SettingsPage />}/>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/loading" element={<LoadingPage />} />
