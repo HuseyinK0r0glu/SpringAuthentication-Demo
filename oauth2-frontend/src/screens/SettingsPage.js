@@ -28,6 +28,7 @@ const SettingsPage = () => {
         setIsAuthenticated(false); 
         localStorage.removeItem("user");
         logout();
+        navigate("/home");
     };
 
     return(
@@ -55,30 +56,38 @@ const SettingsPage = () => {
                 />
                 }
 
-                <h2 className="h4">Welcome, {state.user.name}</h2>
+                <h2 className="h4">{state.user.name}</h2>
                 <p className="text-muted">Email: {state.user.email}</p>
 
-                <button
-                className="btn btn-primary btn-lg mb-3 w-100"
-                onClick={() => navigate("/update-username")}
-                >
-                Update Username
-                </button>
+                <div className="d-flex flex-column align-items-center">
+                  <button
+                    className="btn btn-primary btn-lg w-100 mt-3"
+                    onClick={() => navigate("/update-username")}
+                  >
+                    <i className="fas fa-user-edit me-2"></i> Update Username
+                  </button>
 
-                <button
-                className="btn btn-secondary btn-lg mb-3 w-100"
-                onClick={() => navigate("/update-password")}
-                >
-                Update Password
-                </button>
+                  <button
+                    className="btn btn-secondary btn-lg w-100 mt-3"
+                    onClick={() => navigate("/update-password")}
+                  >
+                    <i className="fas fa-key me-2"></i> Update Password
+                  </button>
 
-                <button 
-                className="btn btn-danger btn-lg mb-3 w-100" 
-                onClick={() => handleLogOut()}
-                >
-                <i className="fab fa-google"></i> Log Out
-                </button>
+                  <button 
+                    className="btn btn-danger btn-lg w-100 mt-3"
+                    onClick={() => handleLogOut()}
+                  >
+                    <i className="fas fa-sign-out-alt me-2"></i> Log Out
+                  </button>
 
+                  <button
+                    className="btn btn-outline-danger btn-lg w-100 mt-3"
+                    onClick={() => navigate("/delete-account")}
+                  >
+                    <i className="fas fa-trash-alt me-2"></i> Delete Account
+                  </button>
+                </div>
             </div>
             ) : (
             <p className="alert alert-warning">No user logged in</p>

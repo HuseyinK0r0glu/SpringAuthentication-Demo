@@ -8,6 +8,7 @@ import VerifyEmailPage from './screens/VerifyEmailPage';
 import UpdatePasswordPage from './screens/updateFlow/updatePasswordPage';
 import UpdateUsernamePage from './screens/updateFlow/updateUserNamePage';
 import SettingsPage from './screens/SettingsPage';
+import DeleteAccountPage from './screens/DeleteAccountPage';
 import { Navbar } from './Navbar';
 import { Provider as UserProvider } from './context/UserContext';
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/verify" element={<VerifyEmailPage />}/>
           <Route path="/update-username" element={<UpdateUsernamePage />}/>
           <Route path="/update-password" element={<UpdatePasswordPage />}/>
+          <Route path="/delete-account" element={<DeleteAccountPage />}/>
         </Routes>
       </Router>
     </UserProvider>

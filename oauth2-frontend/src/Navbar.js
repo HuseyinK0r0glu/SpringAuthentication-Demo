@@ -42,6 +42,9 @@ export const Navbar = () => {
                   </button>
                   <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li>
+                      <NavLink className="dropdown-item" to="/home">Home</NavLink>
+                    </li>
+                    <li>
                       <NavLink className="dropdown-item" to="/settings">Settings</NavLink>
                     </li>
                   </ul>
