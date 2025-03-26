@@ -102,4 +102,27 @@ public class UserController {
         response.put("result", "User deleted successfully");
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{id}/traditional")
+    public ResponseEntity<?> deleteTraditionalUser(@PathVariable Long id,@RequestBody Map<String,String> request) {
+
+        User user = userService.findById(id);
+        String providedPassword = request.get("password");
+
+        Map<String,String> response = new HashMap<>();
+
+        if(user == null){
+            response.put("error", "User not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        if(!passwordEncoder.matches(providedPassword, user.getPassword())) {
+            response.put("error", "Passwords do not match.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        userService.deleteById(id);
+        response.put("result", "User deleted successfully");
+        return ResponseEntity.ok(response);
+    }
 }
