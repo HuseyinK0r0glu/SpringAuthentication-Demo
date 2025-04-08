@@ -1,8 +1,11 @@
 package com.hk.OAuth2.Demo.controller;
 
+import com.hk.OAuth2.Demo.dto.ForgotPasswordRequest;
 import com.hk.OAuth2.Demo.dto.LoginRequest;
 import com.hk.OAuth2.Demo.dto.UserSignUpDto;
+import com.hk.OAuth2.Demo.entity.PasswordResetToken;
 import com.hk.OAuth2.Demo.entity.User;
+import com.hk.OAuth2.Demo.repository.PasswordResetTokenRepository;
 import com.hk.OAuth2.Demo.service.EmailService;
 import com.hk.OAuth2.Demo.service.PasswordValidationService;
 import com.hk.OAuth2.Demo.service.UserService;
@@ -19,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -31,13 +35,15 @@ public class AuthController {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final PasswordValidationService passwordValidationService;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService,PasswordEncoder passwordEncoder,PasswordValidationService passwordValidationService) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder, PasswordValidationService passwordValidationService, PasswordResetTokenRepository passwordResetTokenRepository) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
         this.passwordValidationService = passwordValidationService;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
     @PostMapping("/signup")
@@ -110,6 +116,41 @@ public class AuthController {
 
         return ResponseEntity.ok("User verified successfully");
 
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) throws IOException {
+
+        Map<String,Object> response = new HashMap<>();
+
+        User user = userService.findByEmail(forgotPasswordRequest.getEmail());
+
+        if(user == null) {
+            response.put("error", "User not found");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if(user.getProvider() != null){
+            response.put("error", "Please log in using " + user.getProvider());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(15);
+
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByUser(user);
+        if(passwordResetToken == null) {
+            passwordResetToken = new PasswordResetToken();
+            passwordResetToken.setUser(user);
+        }
+
+        passwordResetToken.setToken(token);
+        passwordResetToken.setExpiryTime(expiryTime);
+        passwordResetTokenRepository.save(passwordResetToken);
+
+        emailService.sendEmail(user.getEmail() , "Password Reset Request", "Click the link to reset your password: http://localhost:3000/new-password?token=" + token);
+        response.put("message", "Reset email send successfully");
+        return ResponseEntity.ok(response);
     }
 
     // for traditional login

@@ -19,6 +19,8 @@ const ForgotPasswordPage = () => {
                 },
                 body : JSON.stringify({email}),
             });
+
+            const data = await response.json();
             
             if(response.ok){
                 setMessage("Reset mail has been sent. Please check your inbox.");
@@ -27,7 +29,7 @@ const ForgotPasswordPage = () => {
                 localStorage.setItem("forgotPasswordCooldown" , (Date.now() + time * 1000).toString());
                 setCoolDown(time);
             }else {
-                setMessage("Something went wrong. Please try again.");
+                setMessage(data.error || "Something went wrong, please try again.");
             }
 
         }catch(error){
@@ -42,7 +44,7 @@ const ForgotPasswordPage = () => {
             const remaining = Math.floor((parseInt(storedExpiry) - now) / 1000);
             if(remaining > 0){
                 setCoolDown(remaining);
-                setMessage("Reset email has been sent. Please check your inbox.");
+                setMessage(`Reset email has been sent. You can request another one in ${remaining} seconds.`);
             }else{
                 localStorage.removeItem("forgotPasswordCooldown");
             }
@@ -55,6 +57,7 @@ const ForgotPasswordPage = () => {
             return () => clearTimeout(timer);
         }else {
             localStorage.removeItem("forgotPasswordCooldown");
+            setMessage("");
         }
     } , [cooldown]);
 
