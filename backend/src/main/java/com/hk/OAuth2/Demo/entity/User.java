@@ -31,6 +31,9 @@ public class User {
     @Column(name = "image")
     private String picture;
 
+    @Column(name = "local_image")
+    private String localPicture;
+
     // for traditional login
     @Column(name = "password")
     private String password;

@@ -74,6 +74,15 @@ const SettingsPage = () => {
                     <i className="fas fa-key me-2"></i> Update Password
                   </button>
 
+                  {state.user.provider !== null && (
+                    <button
+                      className="btn btn-info btn-lg w-100 mt-3"
+                      onClick={() => navigate("/upload-profile-picture")}
+                    >
+                      <i className="fas fa-image me-2"></i> Change Profile Picture
+                    </button>
+                  )}
+
                   <button 
                     className="btn btn-danger btn-lg w-100 mt-3"
                     onClick={() => handleLogOut()}

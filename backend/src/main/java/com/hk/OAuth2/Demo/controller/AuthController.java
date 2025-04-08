@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -232,7 +233,9 @@ public class AuthController {
             response.put("id" , user.getId());
             response.put("email",user.getEmail());
             response.put("name",user.getUsername());
-            response.put("password",user.getPassword());
+            // here we are sending raw to frontend change this when we add JWT logic
+            response.put("password",loginRequest.getPassword());
+            response.put("local_picture",user.getLocalPicture());
 
             return ResponseEntity.ok(response);
 
