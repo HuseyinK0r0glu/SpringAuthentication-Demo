@@ -9,6 +9,8 @@ import UpdatePasswordPage from './screens/updateFlow/updatePasswordPage';
 import UpdateUsernamePage from './screens/updateFlow/updateUserNamePage';
 import SettingsPage from './screens/SettingsPage';
 import DeleteAccountPage from './screens/DeleteAccountPage';
+import ForgotPasswordPage from './screens/ForgotPasswordFlow/ForgotPasswordPage';
+import NewPasswordPage from './screens/ForgotPasswordFlow/NewPasswordPage';
 import { Navbar } from './Navbar';
 import { Provider as UserProvider } from './context/UserContext';
 
@@ -31,6 +33,8 @@ function App() {
           <Route path="/update-username" element={<UpdateUsernamePage />}/>
           <Route path="/update-password" element={<UpdatePasswordPage />}/>
           <Route path="/delete-account" element={<DeleteAccountPage />}/>
+          <Route path="/forgot-password" element={<ForgotPasswordPage />}/>
+          <Route path="/new-password" element={<NewPasswordPage />}/>
         </Routes>
       </Router>
     </UserProvider>

@@ -59,11 +59,11 @@ function LoginPage() {
   return (
     <div className="container text-center mt-5">
       <h1 className="mb-4">Login</h1>
-
+  
       <div className="d-flex flex-column align-items-center justify-content-center">
         {/* Traditional Login Form */}
         <form onSubmit={handleTraditionalLogin} className="w-50 mb-4">
-          <div className="form-group">
+          <div className="form-group text-start">
             <label htmlFor="email" className="form-label">Email</label>
             <input
               type="email"
@@ -75,8 +75,8 @@ function LoginPage() {
               required
             />
           </div>
-
-          <div className="form-group">
+  
+          <div className="form-group text-start mt-3">
             <label htmlFor="password" className="form-label">Password</label>
             <input
               type="password"
@@ -87,40 +87,56 @@ function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <div className="text-end mt-1">
+              <button 
+                type="button" 
+                className="btn btn-link p-0"
+                onClick={() => navigate("/forgot-password")}
+              >
+                Forgot Password?
+              </button>
+            </div>
           </div>
-
-          <button type="submit" className="btn btn-primary btn-lg mt-3 w-100">
+  
+          <button type="submit" className="btn btn-primary btn-lg mt-4 w-100">
             Login with Email
           </button>
         </form>
-
+  
         {error && <p className="text-danger mt-2">{error}</p>}
-
+  
         {/* OAuth2 Login Buttons */}
         <div className="d-flex flex-column align-items-center w-50">
           <button 
             className="btn btn-danger btn-lg mb-3 w-100" 
             onClick={() => handleLogin("google")}
           >
-            <i className="fab fa-google"></i> Login with Google
+            <i className="fab fa-google me-2"></i> Login with Google
           </button>
           <button 
             className="btn btn-dark btn-lg w-100" 
             onClick={() => handleLogin("github")}
           >
-            <i className="fab fa-github"></i> Login with GitHub
+            <i className="fab fa-github me-2"></i> Login with GitHub
           </button>
         </div>
-
+  
         {/* Sign Up Option */}
-        <div className="mt-3">
-          <p>Don't have an account? <button className="btn btn-link" onClick={() => {navigate("/signup")}}>Sign Up</button></p>
+        <div className="mt-4">
+          <p>
+            Don't have an account?{" "}
+            <button 
+              className="btn btn-link p-0" 
+              onClick={() => navigate("/signup")}
+            >
+              Sign Up
+            </button>
+          </p>
         </div>
-
       </div>
     </div>
-
   );
+  
 }
 
 export default LoginPage;
