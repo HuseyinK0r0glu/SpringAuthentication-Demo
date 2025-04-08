@@ -2,6 +2,7 @@ package com.hk.OAuth2.Demo.controller;
 
 import com.hk.OAuth2.Demo.dto.ForgotPasswordRequest;
 import com.hk.OAuth2.Demo.dto.LoginRequest;
+import com.hk.OAuth2.Demo.dto.UpdatePasswordRequest;
 import com.hk.OAuth2.Demo.dto.UserSignUpDto;
 import com.hk.OAuth2.Demo.entity.PasswordResetToken;
 import com.hk.OAuth2.Demo.entity.User;
@@ -150,6 +151,56 @@ public class AuthController {
 
         emailService.sendEmail(user.getEmail() , "Password Reset Request", "Click the link to reset your password: http://localhost:3000/new-password?token=" + token);
         response.put("message", "Reset email send successfully");
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestParam("token") String token ,@RequestBody UpdatePasswordRequest updatePasswordRequest) throws IOException {
+
+        Map<String,Object> response = new HashMap<>();
+
+        if(token == null) {
+            response.put("error", "Missing token");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token);
+
+        if(passwordResetToken == null) {
+            response.put("error", "Token not found");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if(passwordResetToken.getExpiryTime().isBefore(LocalDateTime.now())) {
+            response.put("error", "Token has expired");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        User user = passwordResetToken.getUser();
+
+        if(user == null) {
+            response.put("error", "User not found");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if (passwordEncoder.matches(updatePasswordRequest.getPassword(), user.getPassword())) {
+            response.put("error", "The new password cannot be the same as the old password.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        String passwordValidationResult = PasswordValidationService.validatePassword(updatePasswordRequest.getPassword());
+
+        if (passwordValidationResult != null) {
+            response.put("error", passwordValidationResult);
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        user.setPassword(passwordEncoder.encode(updatePasswordRequest.getPassword()));
+        userService.save(user);
+
+        passwordResetTokenRepository.delete(passwordResetToken);
+
+        response.put("message", "Password successfully reset. You can now log in with your new password.");
         return ResponseEntity.ok(response);
     }
 

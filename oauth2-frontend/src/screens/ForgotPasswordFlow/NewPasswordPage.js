@@ -1,9 +1,182 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate , useLocation } from "react-router-dom";
 
 const NewPasswordPage = () => {
+
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const [password,setPassword] = useState("");
+    const [confirmPassword,setConfirmPassword] = useState("");
+    const [error,setError] = useState("");
+    const [message,setMessage] = useState("");
+
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get('token');
+
+    // for the password
+    const [isValid,setIsValid] = useState(false);
+
+    const [passwordRules,setPasswordRules] = useState({
+      minLength : false,
+      uppercase : false,
+      lowercase : false,
+      number : false,
+      specialChar : false,
+    });
+
+    // regex expression for password validation
+    const validations = {
+      minLength : /.{8,30}/,
+      uppercase : /[A-Z]/,
+      lowercase : /[a-z]/,
+      number : /[0-9]/,
+      specialChar : /[!@#$%^&*(),.?":{}|<>]/,
+    };
+
+    const checkPasswordStrength = (newPassword) => {
+
+      const newRules = {...passwordRules};
+
+      newRules.minLength = validations.minLength.test(newPassword);
+      newRules.uppercase = validations.uppercase.test(newPassword);
+      newRules.lowercase = validations.lowercase.test(newPassword);
+      newRules.number = validations.number.test(newPassword);
+      newRules.specialChar = validations.specialChar.test(newPassword);
+
+      setPasswordRules(newRules);
+
+      const isPasswordValid = Object.values(newRules).every((
+        rule => rule === true
+      ));
+      setIsValid(isPasswordValid);
+
+    };
+
+    const handlePasswordChange = (event) => {
+      setError("");
+      const newPassword = event.target.value;
+      setPassword(newPassword);
+      checkPasswordStrength(newPassword);
+    };
+
+    const handleSubmit = async (e) => {
+
+        e.preventDefault();
+
+        if(!isValid){
+            setError("password is not valid");
+            return;
+          }
+  
+          if (password !== confirmPassword) {
+            setError("Passwords do not match!");
+            return;
+          }
+
+        try{
+
+            const response = await fetch(`http://localhost:8080/api/auth/reset-password?token=${token}`, {
+                method : 'POST',
+                headers : {
+                    "Content-Type" : "application/json",
+                },
+                body : JSON.stringify({password}),
+            });
+
+            const data = await response.json();
+
+            if(response.ok){
+                setMessage("Your password has been successfully reset. You can now log in with your new password.");
+
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
+            }else{
+                setError(data.error || "Something went wrong. Please try again.");
+            }
+
+        }catch(err){
+            setError("Failed to reset password. Please try again.");
+        }
+
+    };
+
     return(
-        <h1>New Password Page enter two passwords</h1>
-    )
+        <div className="container text-center mt-5">
+            <h1 className="mb-4">Reset Your Password</h1>
+            <div className="d-flex flex-column align-items-center justify-content-center">
+                <form onSubmit={handleSubmit} className="w-50 mb-4">
+                <div className="form-group">
+                    <label htmlFor="password" className="form-label">New Password</label>
+                    <input
+                    type="password"
+                    id="password"
+                    className="form-control"
+                    placeholder="Enter new password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
+                    <input
+                    type="password"
+                    id="confirmPassword"
+                    className="form-control"
+                    placeholder="Confirm your password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    />
+                </div>
+
+                <ul className="mt-2 text-left">
+                    {!passwordRules.minLength && (
+                    <li style={{ color: 'red' }}>
+                        Password must be between 8 and 30 characters
+                    </li>
+                    )}
+                    {!passwordRules.uppercase && (
+                    <li style={{ color: 'red' }}>
+                        Must contain at least one uppercase letter
+                    </li>
+                    )}
+                    {!passwordRules.lowercase && (
+                    <li style={{ color: 'red' }}>
+                        Must contain at least one lowercase letter
+                    </li>
+                    )}
+                    {!passwordRules.number && (
+                    <li style={{ color: 'red' }}>
+                        Must contain at least one number
+                    </li>
+                    )}
+                    {!passwordRules.specialChar && (
+                    <li style={{ color: 'red' }}>
+                        Must contain at least one special character
+                    </li>
+                    )}
+                </ul>
+
+                {error && <p className="text-danger mt-2">{error}</p>}
+                {message && <p className="text-success mt-2">{message}</p>}
+
+                <button type="submit" className="btn btn-primary btn-lg mt-1 w-100">
+                    Reset Password
+                </button>
+                </form>
+
+                <div>
+                <button className="btn btn-link" onClick={() => navigate("/login")}>
+                    Back to Login
+                </button>
+                </div>
+            </div>
+            </div>
+        );
 };
 
 export default NewPasswordPage;
