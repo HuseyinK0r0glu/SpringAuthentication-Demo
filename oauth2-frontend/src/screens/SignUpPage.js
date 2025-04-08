@@ -1,6 +1,6 @@
-import { specialChars } from "@testing-library/user-event";
-import React , {use, useState} from "react";
+import React , {useState} from "react";
 import { useNavigate } from "react-router-dom";
+import PasswordValidation from "../components/PasswordValidation";
 
 const SignUpPage = () => {
 
@@ -16,46 +16,17 @@ const SignUpPage = () => {
     const [isValid,setIsValid] = useState(false);
 
     const [passwordRules,setPasswordRules] = useState({
-      minLength : false,
-      uppercase : false,
-      lowercase : false,
-      number : false,
-      specialChar : false,
-    });
-
-    // regex expression for password validation
-    const validations = {
-      minLength : /.{8,30}/,
-      uppercase : /[A-Z]/,
-      lowercase : /[a-z]/,
-      number : /[0-9]/,
-      specialChar : /[!@#$%^&*(),.?":{}|<>]/,
-    };
-
-    const checkPasswordStrength = (newPassword) => {
-
-      const newRules = {...passwordRules};
-
-      newRules.minLength = validations.minLength.test(newPassword);
-      newRules.uppercase = validations.uppercase.test(newPassword);
-      newRules.lowercase = validations.lowercase.test(newPassword);
-      newRules.number = validations.number.test(newPassword);
-      newRules.specialChar = validations.specialChar.test(newPassword);
-
-      setPasswordRules(newRules);
-
-      const isPasswordValid = Object.values(newRules).every((
-        rule => rule === true
-      ));
-      setIsValid(isPasswordValid);
-
-    };
+        minLength : false,
+        uppercase : false,
+        lowercase : false,
+        number : false,
+        specialChar : false,
+      });
 
     const handlePasswordChange = (event) => {
       setError("");
       const newPassword = event.target.value;
       setPassword(newPassword);
-      checkPasswordStrength(newPassword);
     };
 
     const handleSignUp = async (e) => {
@@ -157,33 +128,7 @@ const SignUpPage = () => {
             />
           </div>
       
-          <ul className="mt-2 text-left">
-            {!passwordRules.minLength && (
-              <li style={{ color: 'red' }}>
-                Password must be between 8 and 30 characters
-              </li>
-            )}
-            {!passwordRules.uppercase && (
-              <li style={{ color: 'red' }}>
-                Must contain at least one uppercase letter
-              </li>
-            )}
-            {!passwordRules.lowercase && (
-              <li style={{ color: 'red' }}>
-                Must contain at least one lowercase letter
-              </li>
-            )}
-            {!passwordRules.number && (
-              <li style={{ color: 'red' }}>
-                Must contain at least one number
-              </li>
-            )}
-            {!passwordRules.specialChar && (
-              <li style={{ color: 'red' }}>
-                Must contain at least one special character
-              </li>
-            )}
-            </ul>
+          <PasswordValidation password = {password} setIsValid = {setIsValid} setPasswordRules = {setPasswordRules} />
 
           {error && <p className="text-danger mt-2">{error}</p>}
   
