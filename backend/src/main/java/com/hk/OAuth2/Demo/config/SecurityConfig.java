@@ -1,5 +1,6 @@
 package com.hk.OAuth2.Demo.config;
 
+import com.hk.OAuth2.Demo.jwt.JWTAuthenticationFilter;
 import com.hk.OAuth2.Demo.service.CustomUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,17 +13,21 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailService customUserDetailService;
+    private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(CustomUserDetailService customUserDetailService) {
+    public SecurityConfig(CustomUserDetailService customUserDetailService, JWTAuthenticationFilter jwtAuthenticationFilter) {
         this.customUserDetailService = customUserDetailService;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+    // change this after jwt set up
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> {
@@ -37,9 +42,9 @@ public class SecurityConfig {
                             authorizeRequests.anyRequest().authenticated();
                         })
                         .userDetailsService(customUserDetailService)
+                        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                         // after log in redirect to front end
-                        .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("http://localhost:3000/loading" , true))
+                        .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("http://localhost:3000/loading" , true))
                         .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }

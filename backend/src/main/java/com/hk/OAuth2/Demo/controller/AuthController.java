@@ -6,6 +6,7 @@ import com.hk.OAuth2.Demo.dto.UpdatePasswordRequest;
 import com.hk.OAuth2.Demo.dto.UserSignUpDto;
 import com.hk.OAuth2.Demo.entity.PasswordResetToken;
 import com.hk.OAuth2.Demo.entity.User;
+import com.hk.OAuth2.Demo.jwt.JWTUtil;
 import com.hk.OAuth2.Demo.repository.PasswordResetTokenRepository;
 import com.hk.OAuth2.Demo.service.EmailService;
 import com.hk.OAuth2.Demo.service.PasswordValidationService;
@@ -36,14 +37,16 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final PasswordValidationService passwordValidationService;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final JWTUtil jwtUtil;
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder, PasswordValidationService passwordValidationService, PasswordResetTokenRepository passwordResetTokenRepository) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder, PasswordValidationService passwordValidationService, PasswordResetTokenRepository passwordResetTokenRepository,JWTUtil jwtUtil) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.emailService = emailService;
         this.passwordEncoder = passwordEncoder;
         this.passwordValidationService = passwordValidationService;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/signup")
@@ -213,6 +216,11 @@ public class AuthController {
             User user = userService.findByEmail(loginRequest.getEmail());
             Map<String,Object> response = new HashMap<>();
 
+            if(user == null) {
+                response.put("error", "User not found");
+                return ResponseEntity.badRequest().body(response);
+            }
+
             if (user.getVerified() == 0) {
                 response.put("error", "Email is not verified. Please verify your email before logging in.");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
@@ -227,6 +235,9 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
             );
 
+            String token = jwtUtil.generateToken(user.getEmail());
+            response.put("token",token);
+
             response.put("message","Login Successful");
             response.put("id" , user.getId());
             response.put("email",user.getEmail());
@@ -238,7 +249,9 @@ public class AuthController {
             return ResponseEntity.ok(response);
 
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            Map<String,Object> response = new HashMap<>();
+            response.put("error", "Invalid username or password");
+            return ResponseEntity.badRequest().body(response);
         }
 
     }
@@ -278,6 +291,8 @@ public class AuthController {
 
         User user = userService.createUser(name , email , provider, oauth2Id , picture);
 
+        String tokenJwt = jwtUtil.generateToken(user.getEmail());
+
         // Return user details as JSON for frontend
         Map<String,Object> response = new HashMap<>();
         response.put("id" , user.getId());
@@ -286,6 +301,7 @@ public class AuthController {
         response.put("provider" , user.getProvider());
         response.put("oauth2Id" , user.getOauth2Id());
         response.put("picture" , picture);
+        response.put("token" , tokenJwt);
 
         return ResponseEntity.ok(response);
     }
