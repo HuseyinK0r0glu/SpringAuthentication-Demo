@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -156,7 +154,7 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam("token") String token ,@RequestBody UpdatePasswordRequest updatePasswordRequest) throws IOException {
+    public ResponseEntity<?> resetPassword(@RequestParam("token") String token ,@RequestBody UpdatePasswordRequest updatePasswordRequest) {
 
         Map<String,Object> response = new HashMap<>();
 

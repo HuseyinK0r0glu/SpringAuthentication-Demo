@@ -17,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -60,7 +59,8 @@ public class UserController {
 
         user.setUsername(updateUserNameRequest.getUsername());
         userService.save(user);
-        return ResponseEntity.ok("Username updated successfully");
+        response.put("message", "User updated successfully.");
+        return ResponseEntity.ok().body(response);
     }
 
     @PutMapping("/{id}/update-password")
@@ -92,7 +92,8 @@ public class UserController {
 
         user.setPassword(passwordEncoder.encode(updatePasswordRequest.getPassword()));
         userService.save(user);
-        return ResponseEntity.ok("Password updated successfully");
+        response.put("message", "Password updated successfully");
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("/{id}/oauth")
