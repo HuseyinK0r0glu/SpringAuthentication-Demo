@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate , useLocation } from "react-router-dom";
 import PasswordValidation from "../../components/PasswordValidation";
+import { authFetch } from "../../components/ApiClient";
 
 const NewPasswordPage = () => {
 
@@ -48,28 +49,22 @@ const NewPasswordPage = () => {
 
         try{
 
-            const response = await fetch(`http://localhost:8080/api/auth/reset-password?token=${token}`, {
+            const data = await authFetch(`http://localhost:8080/api/auth/reset-password?token=${token}`,{
                 method : 'POST',
                 headers : {
                     "Content-Type" : "application/json",
                 },
                 body : JSON.stringify({password}),
-            });
+            },false);
 
-            const data = await response.json();
+            setMessage("Your password has been successfully reset. You can now log in with your new password.");
 
-            if(response.ok){
-                setMessage("Your password has been successfully reset. You can now log in with your new password.");
-
-                setTimeout(() => {
-                    navigate("/login");
-                }, 2000);
-            }else{
-                setError(data.error || "Something went wrong. Please try again.");
-            }
+            setTimeout(() => {
+                navigate("/login");
+            }, 2000);
 
         }catch(err){
-            setError("Failed to reset password. Please try again.");
+            setError(err.message || "Failed to reset password. Please try again.");
         }
 
     };

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { authFetch } from "../../components/ApiClient";
 
 const ForgotPasswordPage = () => {
 
@@ -12,28 +13,23 @@ const ForgotPasswordPage = () => {
         e.preventDefault();
 
         try{
-            const response = await fetch("http://localhost:8080/api/auth/forgot-password",{
-                method : 'POST',
-                headers : {
-                    "Content-Type" : "application/json",
-                },
-                body : JSON.stringify({email}),
+
+            const data = await authFetch("http://localhost:8080/api/auth/forgot-password",{
+              method : 'POST',
+              headers : {
+                  "Content-Type" : "application/json",
+              },
+              body : JSON.stringify({email}),
             });
 
-            const data = await response.json();
-            
-            if(response.ok){
-                setMessage("Reset mail has been sent. Please check your inbox.");
-                setEmail("");
-                const time = 60;
-                localStorage.setItem("forgotPasswordCooldown" , (Date.now() + time * 1000).toString());
-                setCoolDown(time);
-            }else {
-                setMessage(data.error || "Something went wrong, please try again.");
-            }
+            setMessage("Reset mail has been sent. Please check your inbox.");
+            setEmail("");
+            const time = 60;
+            localStorage.setItem("forgotPasswordCooldown" , (Date.now() + time * 1000).toString());
+            setCoolDown(time);
 
         }catch(error){
-            setMessage("Failed to send reset email.");
+            setMessage(error.message || "Failed to send reset email.");
         }
     };
 

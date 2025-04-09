@@ -1,6 +1,7 @@
 import React , {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import PasswordValidation from "../components/PasswordValidation";
+import { authFetch } from "../components/ApiClient";
 
 const SignUpPage = () => {
 
@@ -44,30 +45,24 @@ const SignUpPage = () => {
 
         try{    
 
-            const response = await fetch('http://localhost:8080/api/auth/signup', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  username,
-                  email,
-                  password,
-                  confirmPassword
-                }),
-              });
+            const data = await authFetch('http://localhost:8080/api/auth/signup',{
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                username,
+                email,
+                password,
+                confirmPassword
+              }),
+            },false);
 
-            const data = await response.json();
-
-            if(response.ok){
-                alert(data.message || "Verification link is send! Please check your email!");
-                navigate("/verify");
-            }else{
-                setError(data.error || "Sign up failed. Please try again.")
-            }
-
+            alert(data.message || "Verification link is send! Please check your email!");
+            navigate("/verify");
+            
         }catch(error){
-            setError('Error occurred during sign up');
+            setError(error.message || 'Error occurred during sign up');
         }
     };
 

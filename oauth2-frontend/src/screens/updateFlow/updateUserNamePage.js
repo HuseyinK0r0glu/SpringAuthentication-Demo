@@ -1,6 +1,7 @@
-import {useState , useContext, use} from "react";
+import {useState , useContext} from "react";
 import { Context as UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { authFetch } from "../../components/ApiClient";
 
 const UpdateUsernamePage = () => {
 
@@ -17,30 +18,26 @@ const UpdateUsernamePage = () => {
         const userId = state.user.id;
 
         try{
-            const response = await fetch(`http://localhost:8080/api/users/${userId}/update-username`,{
-                method : 'PUT',
-                headers : {
-                    'Content-Type' : 'application/json',
-                },
-                body : JSON.stringify({username})
-            })
 
-            if(response.ok){
-                setStatus("success");
-                setMessage("Username updated successfully!");
-                // after calling the api and getting succesfull result update user 
-                const updatedUser = {...state.user,name: username};
-                setUser(updatedUser);
-                localStorage.setItem("user",JSON.stringify(updatedUser));
-                setTimeout(() => navigate("/home") , 1000);
-            }else {
-                setStatus("failed");
-                const data = await response.json();
-                setMessage(data.error);
-            }
+            const data = await authFetch(`http://localhost:8080/api/users/${userId}/update-username`,{
+              method : 'PUT',
+              headers : {
+                  'Content-Type' : 'application/json',
+              },
+              body : JSON.stringify({username})
+            },true);
 
+            setStatus("success");
+            setMessage("Username updated successfully!");
+            // after calling the api and getting succesfull result update user 
+            const updatedUser = {...state.user,name: username};
+            setUser(updatedUser);
+            localStorage.setItem("user",JSON.stringify(updatedUser));
+            setTimeout(() => navigate("/home") , 1000);
+            
         }catch(error){
-            setMessage("Something went wrong!");
+            setStatus("failed");
+            setMessage(error.message || "Something went wrong!");
         }
     }
 

@@ -1,6 +1,7 @@
 import React , {useContext, useState, useEffect} from "react";
 import { Context as UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { authFetch } from "../components/ApiClient";
 
 const DeleteAccountPage = () => {
 
@@ -29,38 +30,35 @@ const DeleteAccountPage = () => {
         const requestBody = user.provider ? {} : {password};
 
         try{
-            let response = "";
+
+            let data;
 
             if(user.provider){
-                response = await fetch(`http://localhost:8080/api/users/${user.id}/oauth`,{
-                    method : "DELETE",
-                    headers : {
-                        "Content-Type" : "application/json"
-                    },
-                });
+              data = await authFetch(`http://localhost:8080/api/users/${user.id}/oauth`,{
+                method : "DELETE",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+              },true);
             }else {
-                response = await fetch(`http://localhost:8080/api/users/${user.id}/traditional`,{
-                    method : "DELETE",
-                    headers : {
-                        "Content-Type" : "application/json"
-                    },
-                    body : JSON.stringify(requestBody) 
-                });
+              data = await authFetch(`http://localhost:8080/api/users/${user.id}/traditional`,{
+                method : "DELETE",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify(requestBody) 
+              },true);
             }
 
-            if(response.ok){
-                alert("Your account has been deleted.");
-                localStorage.clear();
-                logout(); 
-                navigate("/home"); 
-            }else {
-                alert(response.get("error"));
-            }
+            alert("Your account has been deleted.");
+            localStorage.clear();
+            logout(); 
+            navigate("/home"); 
 
         }catch(error){
+            alert(error.message);
             console.error("Error deleting account:", error);
         }
-
     }
 
     return(

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { authFetch } from "../components/ApiClient";
 
 const UploadProfilePicture = () => {
 
@@ -25,24 +26,18 @@ const UploadProfilePicture = () => {
         formData.append("password", parsedUser.password);
 
         try{
-            const response = await fetch("http://localhost:8080/api/users/upload-profile-picture",{
+
+            const data = authFetch("http://localhost:8080/api/users/upload-profile-picture",{
                 method : 'POST',
                 body : formData,
                 credentials : "include"
-            });
+            },true);
 
-            const result = await response.json();
-            
-            if(response.ok){
-                console.log(result);
-                setTimeout(() => navigate("/settings") , 2000);
-            }else {
-                console.log(result.error);
-                setError(result.error);
-            }
+            console.log(data);
+            setTimeout(() => navigate("/settings") , 2000);
 
         }catch(err){
-            console.error("Upload failed:", err);
+            console.error(err.message || "Upload failed:", err);
         }
 
     };

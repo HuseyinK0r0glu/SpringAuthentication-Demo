@@ -2,6 +2,7 @@ import { useState,useContext } from "react";
 import { Context as UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import PasswordValidation from "../../components/PasswordValidation";
+import { authFetch } from "../../components/ApiClient";
 
 const UpdatePasswordPage = () => {
 
@@ -47,7 +48,8 @@ const UpdatePasswordPage = () => {
         const userId = state.user.id;
 
         try{
-            const response = await fetch(`http://localhost:8080/api/users/${userId}/update-password`,{
+
+            const data = await authFetch(`http://localhost:8080/api/users/${userId}/update-password`,{
                 method : 'PUT',
                 headers : {
                     'Content-Type' : 'application/json',
@@ -56,22 +58,16 @@ const UpdatePasswordPage = () => {
                     password,
                     confirmPassword
                 })
-            })
+            },true);
 
-            if(response.ok){
-                setStatus("success");
-                setMessage("Password updated successfully!");
-                setTimeout(() => navigate("/home") , 1000);
-            }else {
-                setStatus("failed");
-                const data = await response.json();
-                setMessage(data.error);
-            }
+            setStatus("success");
+            setMessage("Password updated successfully!");
+            setTimeout(() => navigate("/home") , 1000);
 
-        }catch{
-            setMessage("Something went wrong!");
+        }catch(err){
+            setStatus("failed");
+            setMessage(err.message || "Something went wrong!");
         }
-
     }
 
     return(

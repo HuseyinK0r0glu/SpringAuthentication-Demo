@@ -1,6 +1,7 @@
 import { useEffect , useContext } from "react";
 import { Context as UserContext} from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { authFetch } from "../components/ApiClient";
 
 const LoadingPage = () => {
 
@@ -9,8 +10,10 @@ const LoadingPage = () => {
 
     const handleResponse = (data) => {
         if(data && data.id){
-          setUser(data);
-          localStorage.setItem("user" , JSON.stringify(data));
+          const { token, ...userInfo } = data;
+          setUser(userInfo);
+          localStorage.setItem("user" , JSON.stringify(userInfo));
+          localStorage.setItem("token", token);
           navigate("/home");
         }
       };
@@ -20,20 +23,14 @@ const LoadingPage = () => {
         const getUserData = async () => {
     
           try{
-    
-            const response = await fetch("http://localhost:8080/api/auth/oauth2/login" , {
+
+            const data = await authFetch("http://localhost:8080/api/auth/oauth2/login",{
               method : "GET",
               credentials : "include"
-            });
+            },false);
     
-            if(response.ok){
-              const data = await response.json();
-              handleResponse(data);
-            }else {
-              console.log("Failed to fetch user data");
-              navigate("/login");
-            }
-    
+            handleResponse(data);
+                
           }catch(error){
             console.error("Error fetching user data:", error);
             navigate("/login");

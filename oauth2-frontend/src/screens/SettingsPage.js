@@ -27,6 +27,8 @@ const SettingsPage = () => {
     const handleLogOut = () => {
         setIsAuthenticated(false); 
         localStorage.removeItem("user");
+        // remove jwt too
+        localStorage.removeItem("token");
         logout();
         navigate("/home");
     };
@@ -88,7 +90,7 @@ const SettingsPage = () => {
                     onClick={() => handleLogOut()}
                   >
                     <i className="fas fa-sign-out-alt me-2"></i> Log Out
-                  </button>
+                  </button> 
 
                   <button
                     className="btn btn-outline-danger btn-lg w-100 mt-3"
