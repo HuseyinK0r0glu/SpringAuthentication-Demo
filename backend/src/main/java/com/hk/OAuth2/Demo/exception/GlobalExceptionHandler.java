@@ -1,5 +1,7 @@
 package com.hk.OAuth2.Demo.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,6 +15,8 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String,Object>> handleGlobalException(Exception ex, WebRequest request) {
 
@@ -22,6 +26,11 @@ public class GlobalExceptionHandler {
         response.put("error", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
         response.put("message" , ex.getMessage());
         response.put("path" , request.getDescription(false));
+
+        logger.error("Error occurred at path: {}", request.getDescription(false));
+        logger.error("Message: {}", ex.getMessage());
+        logger.error("Status: {}", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        logger.error("Timestamp: {}", LocalDateTime.now());
 
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 
