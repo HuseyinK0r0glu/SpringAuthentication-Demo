@@ -6,6 +6,7 @@ import { authFetch } from "../../components/ApiClient";
 
 const UpdatePasswordPage = () => {
 
+    const {logout} = useContext(UserContext);
     const navigate = useNavigate();
 
     const[password,setPassword] = useState("");
@@ -36,20 +37,20 @@ const UpdatePasswordPage = () => {
     const updatePassword = async () => {
 
         if(!isValid){
+            setMessage("");
             setError("password is not valid");
             return;
-          }
+        }
   
-          if (password !== confirmPassword) {
+        if (password !== confirmPassword) {
+            setMessage("");
             setError("Passwords do not match!");
             return;
-          }
-
-        const userId = state.user.id;
+        }
 
         try{
 
-            const data = await authFetch(`http://localhost:8080/api/users/${userId}/update-password`,{
+            const data = await authFetch(`http://localhost:8080/api/users/update-password`,{
                 method : 'PUT',
                 headers : {
                     'Content-Type' : 'application/json',
@@ -60,12 +61,20 @@ const UpdatePasswordPage = () => {
                 })
             },true);
 
+            if(data.invalidToken){
+                logout();
+                navigate("/login?message=session-expired");
+                return;
+              }
+
             setStatus("success");
+            setError("");
             setMessage("Password updated successfully!");
             setTimeout(() => navigate("/home") , 1000);
 
         }catch(err){
             setStatus("failed");
+            setError("");
             setMessage(err.message || "Something went wrong!");
         }
     }

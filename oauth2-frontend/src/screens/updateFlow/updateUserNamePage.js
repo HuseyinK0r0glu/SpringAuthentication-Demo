@@ -1,4 +1,4 @@
-import {useState , useContext} from "react";
+import {useState , useContext } from "react";
 import { Context as UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../components/ApiClient";
@@ -7,7 +7,7 @@ const UpdateUsernamePage = () => {
 
     const navigate = useNavigate();
 
-    const {state,setUser} = useContext(UserContext);  
+    const {state,setUser,logout} = useContext(UserContext);  
 
     const[username,setUsername] = useState("");  
     const[message,setMessage] = useState("");  
@@ -15,17 +15,27 @@ const UpdateUsernamePage = () => {
 
     const updateUsername = async () => {
 
-        const userId = state.user.id;
+        if (username.trim() === "") {
+          setStatus("failed");
+          setMessage("Username is required.");
+          return;
+        }
 
         try{
 
-            const data = await authFetch(`http://localhost:8080/api/users/${userId}/update-username`,{
+            const data = await authFetch(`http://localhost:8080/api/users/update-username`,{
               method : 'PUT',
               headers : {
                   'Content-Type' : 'application/json',
               },
               body : JSON.stringify({username})
             },true);
+
+            if(data.invalidToken){
+              logout();
+              navigate("/login?message=session-expired");
+              return;
+            }
 
             setStatus("success");
             setMessage("Username updated successfully!");
@@ -57,6 +67,7 @@ const UpdateUsernamePage = () => {
               placeholder="New Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              required
             />
           </div>
   
