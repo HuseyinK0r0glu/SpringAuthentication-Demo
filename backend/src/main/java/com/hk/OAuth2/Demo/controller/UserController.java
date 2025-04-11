@@ -7,6 +7,8 @@ import com.hk.OAuth2.Demo.service.PasswordValidationService;
 import com.hk.OAuth2.Demo.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,17 +31,22 @@ public class UserController {
     private final PasswordValidationService passwordValidationService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, PasswordValidationService passwordValidationService,PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService,
+                          PasswordValidationService passwordValidationService,
+                          PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordValidationService = passwordValidationService;
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PutMapping("/{id}/update-username")
-    public ResponseEntity<?> updateUserName(@PathVariable Long id, @RequestBody UpdateUserNameRequest updateUserNameRequest) {
+    @PutMapping("/update-username")
+    public ResponseEntity<?> updateUserName(@RequestBody UpdateUserNameRequest updateUserNameRequest) {
 
         Map<String,String> response = new HashMap<>();
-        User user = userService.findById(id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailAddress = (String) authentication.getPrincipal();
+        User user = userService.findByEmail(emailAddress);
 
         if(user == null) {
             response.put("error", "User not found.");
@@ -63,11 +70,14 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PutMapping("/{id}/update-password")
-    public ResponseEntity<?> updatePassword(@PathVariable Long id,@RequestBody UpdatePasswordRequest updatePasswordRequest) {
+    @PutMapping("/update-password")
+    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest) {
 
         Map<String,String> response = new HashMap<>();
-        User user = userService.findById(id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailAddress = (String) authentication.getPrincipal();
+        User user = userService.findByEmail(emailAddress);
 
         if(user == null) {
             response.put("error", "User not found.");
@@ -96,10 +106,12 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
-    @DeleteMapping("/{id}/oauth")
-    public ResponseEntity<?> deleteOauthUser(@PathVariable Long id) {
+    @DeleteMapping("/oauth")
+    public ResponseEntity<?> deleteOauthUser() {
 
-        User user = userService.findById(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailAddress = (String) authentication.getPrincipal();
+        User user = userService.findByEmail(emailAddress);
 
         Map<String,String> response = new HashMap<>();
 
@@ -108,15 +120,18 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
-        userService.deleteById(id);
+        userService.deleteById(user.getId());
         response.put("result", "User deleted successfully");
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}/traditional")
-    public ResponseEntity<?> deleteTraditionalUser(@PathVariable Long id,@RequestBody Map<String,String> request) {
+    @DeleteMapping("/traditional")
+    public ResponseEntity<?> deleteTraditionalUser(@RequestBody Map<String,String> request) {
 
-        User user = userService.findById(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailAddress = (String) authentication.getPrincipal();
+        User user = userService.findByEmail(emailAddress);
+
         String providedPassword = request.get("password");
 
         Map<String,String> response = new HashMap<>();
@@ -131,15 +146,13 @@ public class UserController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        userService.deleteById(id);
+        userService.deleteById(user.getId());
         response.put("result", "User deleted successfully");
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/upload-profile-picture")
-    public ResponseEntity<?> addProfilePicture(@RequestParam("image") MultipartFile image,@RequestParam("email") String email,@RequestParam("password") String password) throws IOException {
-
-        // we are getting the password from the frontend to get authenticated user change this to jwt
+    public ResponseEntity<?> addProfilePicture(@RequestParam("image") MultipartFile image) throws IOException {
 
         Map<String,String> response = new HashMap<>();
 
@@ -148,18 +161,13 @@ public class UserController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        User user = userService.findByEmail(email);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailAddress = (String) authentication.getPrincipal();
+        User user = userService.findByEmail(emailAddress);
 
         if(user == null) {
             response.put("error", "User not found.");
             return ResponseEntity.badRequest().body(response);
-        }
-
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            System.out.println(password);
-            System.out.println(user.getPassword());
-            response.put("error", "Invalid password.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
         String directory = "uploads/profile_pictures";
