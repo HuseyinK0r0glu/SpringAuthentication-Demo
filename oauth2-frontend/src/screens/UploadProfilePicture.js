@@ -16,28 +16,30 @@ const UploadProfilePicture = () => {
 
     const handleUpload = async () => {
         if (!file) return;
-
-        const userFromStorage = localStorage.getItem("user");
-        const parsedUser = JSON.parse(userFromStorage);
-
+        
         const formData = new FormData();
         formData.append("image", file);
-        formData.append("email", parsedUser.email);
-        formData.append("password", parsedUser.password);
 
         try{
 
-            const data = authFetch("http://localhost:8080/api/users/upload-profile-picture",{
+            const data = await authFetch("http://localhost:8080/api/users/upload-profile-picture",{
                 method : 'POST',
                 body : formData,
                 credentials : "include"
             },true);
 
+            if(data.invalidToken){
+                navigate("/login?message=session-expired");
+                return;
+              }
+
+            setError("");
             console.log(data);
             setTimeout(() => navigate("/settings") , 2000);
 
         }catch(err){
             console.error(err.message || "Upload failed:", err);
+            setError(error.message || "Something went wrong!");
         }
 
     };
