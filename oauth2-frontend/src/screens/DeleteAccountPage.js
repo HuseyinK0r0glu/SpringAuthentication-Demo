@@ -34,20 +34,26 @@ const DeleteAccountPage = () => {
             let data;
 
             if(user.provider){
-              data = await authFetch(`http://localhost:8080/api/users/${user.id}/oauth`,{
+              data = await authFetch(`http://localhost:8080/api/users/oauth`,{
                 method : "DELETE",
                 headers : {
                     "Content-Type" : "application/json"
                 },
               },true);
             }else {
-              data = await authFetch(`http://localhost:8080/api/users/${user.id}/traditional`,{
+              data = await authFetch(`http://localhost:8080/api/users/traditional`,{
                 method : "DELETE",
                 headers : {
                     "Content-Type" : "application/json"
                 },
                 body : JSON.stringify(requestBody) 
               },true);
+            }
+
+            if(data.invalidToken){
+              logout();
+              navigate("/login?message=session-expired");
+              return;
             }
 
             alert("Your account has been deleted.");
