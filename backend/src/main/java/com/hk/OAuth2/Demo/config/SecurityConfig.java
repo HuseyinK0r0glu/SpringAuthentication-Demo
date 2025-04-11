@@ -4,6 +4,7 @@ import com.hk.OAuth2.Demo.jwt.JWTAuthenticationFilter;
 import com.hk.OAuth2.Demo.service.CustomUserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -27,18 +28,19 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    // change this after jwt set up
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> {
                             authorizeRequests.requestMatchers("/",
                                     "/api/auth/**",
                                     "/api/auth/verify",
-                                    "/api/users/**",
-                                    "/api/users/3/update-username",
                                     "/error",
                                     "/actuator/health",
                                     "/actuator/metrics" ).permitAll();
+                            // Preflight CORS check
+                            // when we send a request from the frontend the browser sends a preflight request using HTTP OPTIONS method.
+                            // This request asks the server for permission to proceed.
+                            authorizeRequests.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
                             authorizeRequests.anyRequest().authenticated();
                         })
                         .userDetailsService(customUserDetailService)
@@ -50,7 +52,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
+    public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(customUserDetailService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
