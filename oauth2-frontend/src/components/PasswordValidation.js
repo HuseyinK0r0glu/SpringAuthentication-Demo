@@ -37,7 +37,7 @@ const PasswordValidation = ({password,setIsValid,setPasswordRules}) => {
         setIsValid(isPasswordValid);
         setPasswordRules(newRules);
       };
-
+      
 
       useEffect(() => {
         checkPasswordStrength();
