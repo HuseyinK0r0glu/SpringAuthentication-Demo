@@ -9,16 +9,24 @@ export const authFetch = async (url,options = {},requiresAuth = false) => {
         }
     }
 
-    return fetch(url,{...options,headers})
-        .then(async (response) => {
-            const data = await response.json();
-            if(!response.ok){
-                throw new Error(data.error || "Something went wrong!");
-            }
-            return data;
-        })
-        .catch((err) => {
-            console.error("Api Client error" , err.message);
-            throw err;
-        });
+    try{
+        const response = await fetch(url,{...options,headers});
+
+        if(response.status === 401){
+            localStorage.removeItem("user");
+            localStorage.removeItem("token");
+            return { invalidToken: true };
+        }
+
+        const data = await response.json();
+
+        if(!response.ok){
+            throw new Error(data.error || "Something went wrong!");
+        }
+
+        return data;
+    }catch(error){
+        console.error("Api Client error" , error.message);
+        throw error;
+    }
 };  
