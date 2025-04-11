@@ -1,9 +1,11 @@
-import React, { use, useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context as UserContext } from "../context/UserContext";
 import { authFetch } from "../components/ApiClient";
 
 function LoginPage() {
+
+  const message = new URLSearchParams(window.location.search).get("message");
 
   const {setUser} = useContext(UserContext);
   const navigate = useNavigate();
@@ -60,6 +62,11 @@ return (
     <h1 className="mb-4">Login</h1>
 
     <div className="d-flex flex-column align-items-center justify-content-center">
+      {message === "session-expired" && (
+        <div className="alert alert-warning text-center mt-3" role="alert">
+          <strong>Your session has timed out:</strong> Please log in again to continue.
+        </div>
+      )}
       {/* Traditional Login Form */}
       <form onSubmit={handleTraditionalLogin} className="w-50 mb-4">
         <div className="form-group text-start">
@@ -97,12 +104,12 @@ return (
           </div>
         </div>
 
+        {error && <p className="text-danger mt-2">{error}</p>}
+
         <button type="submit" className="btn btn-primary btn-lg mt-4 w-100">
           Login with Email
         </button>
       </form>
-
-      {error && <p className="text-danger mt-2">{error}</p>}
 
       {/* OAuth2 Login Buttons */}
       <div className="d-flex flex-column align-items-center w-50">
