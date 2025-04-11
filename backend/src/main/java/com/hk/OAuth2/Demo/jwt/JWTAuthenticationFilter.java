@@ -1,5 +1,7 @@
 package com.hk.OAuth2.Demo.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,17 +27,36 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        final String token = request.getHeader("Authorization");
+        try {
+            final String token = request.getHeader("Authorization");
 
-        if (token != null && token.startsWith("Bearer ")) {
-            String jwtToken = token.substring(7);
-            if(!jwtUtil.isExpired(jwtToken)) {
-                String username = jwtUtil.getUsername(jwtToken);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (token != null && token.startsWith("Bearer ")) {
+                String jwtToken = token.substring(7);
+                if(!jwtUtil.isExpired(jwtToken)) {
+                    String username = jwtUtil.getUsername(jwtToken);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    throw new ExpiredJwtException(null, null, "Token has expired");
+                }
             }
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            // When we write our own response we are bypassing all Spring filters including cors filter.
+            // So we have to specify some cors information by hand.
+            response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+            response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+            response.getWriter().write("{\"error\": \"Token expired\"}");
+        }catch (JwtException e) {
+            // Token is invalid
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+            response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+            response.getWriter().write("{\"error\": \"Invalid token\"}");
         }
-        filterChain.doFilter(request, response);
     }
 }
