@@ -304,4 +304,10 @@ public class AuthController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/validate-token")
+    public ResponseEntity<Map<String,Object>> validateToken() {
+        return ResponseEntity.ok(Map.of("success","Token is valid"));
+    }
+
 }

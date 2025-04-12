@@ -2,14 +2,39 @@ import React , {useContext, useEffect, useState} from "react";
 import {Context as UserContext} from "../context/UserContext";
 import AdminPage from "./AdminPage";
 import defaultUserImage from "../assets/defaultUserImage.jpeg"
+import { authFetch } from "../components/ApiClient";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   
-    const {state,setUser} = useContext(UserContext);
+    const navigate = useNavigate();
+
+    const {state,setUser,logout} = useContext(UserContext);
     const[isAuthenticated,setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-    
+
+      const checkToken = async () => {
+        const token = localStorage.getItem("token");
+
+        try{
+          
+          const data = await authFetch("http://localhost:8080/api/auth/validate-token",{
+            method : 'GET'
+          },true);
+
+          if(data.invalidToken){
+            logout();
+            navigate("/login?message=session-expired");
+            return;
+          }
+
+        }catch(error){
+          console.log(error.message);
+        }
+
+      };
+
       const userFromStorage = localStorage.getItem("user");
       if(userFromStorage){
         const parsedUser = JSON.parse(userFromStorage);
@@ -20,6 +45,22 @@ const HomePage = () => {
       }else {
         setIsAuthenticated(false);
       }
+
+      if(setIsAuthenticated){
+
+        const token = localStorage.getItem("token");
+
+        if(!token){
+          logout();
+          localStorage.clear();
+          navigate("/login?message=session-expired");
+          return;
+        }
+
+        checkToken();
+
+      }      
+
     },[]);
  
     return (
