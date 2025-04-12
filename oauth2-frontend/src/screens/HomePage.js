@@ -1,5 +1,6 @@
 import React , {useContext, useEffect, useState} from "react";
 import {Context as UserContext} from "../context/UserContext";
+import AdminPage from "./AdminPage";
 import defaultUserImage from "../assets/defaultUserImage.jpeg"
 
 const HomePage = () => {
@@ -23,35 +24,40 @@ const HomePage = () => {
  
     return (
       <div className="container text-center mt-5">
-        <h1 className="mb-4">Home Page</h1>
-        {isAuthenticated ? ( 
-          <div className="card p-4 shadow-sm" style={{ maxWidth: "400px", margin: "auto" }}>
-
-            {state.user.picture 
-              ? 
-              <img 
-                src={state.user.picture} 
-                alt="Profile" 
-                className="rounded-circle border mb-3"
-                width="100" 
-                height="100" 
-              />
-              :
-              <img 
-                src={defaultUserImage} 
-                alt="Profile" 
-                className="rounded-circle border mb-3"
-                width="100" 
-                height="100" 
-              />
-            }
-
-            <h2 className="h4">Welcome, {state.user.name}</h2>
-            <p className="text-muted">Email: {state.user.email}</p>
-
-          </div>
+        {isAuthenticated ? 
+          state.user.roles.includes("ROLE_ADMIN") ? (
+            <AdminPage/>
+          ) : ( 
+              <div>
+                <h1 className="mb-4">Home Page</h1>
+                <div className="card p-4 shadow-sm" style={{ maxWidth: "400px", margin: "auto" }}>
+                  {state.user.picture 
+                    ? 
+                    <img 
+                      src={state.user.picture} 
+                      alt="Profile" 
+                      className="rounded-circle border mb-3"
+                      width="100" 
+                      height="100" 
+                    />
+                    :
+                    <img 
+                      src={defaultUserImage} 
+                      alt="Profile" 
+                      className="rounded-circle border mb-3"
+                      width="100" 
+                      height="100" 
+                    />
+                  }
+                  <h2 className="h4">Welcome, {state.user.name}</h2>
+                  <p className="text-muted">Email: {state.user.email}</p>
+                </div>
+              </div>
         ) : (
-          <p className="alert alert-warning">No user logged in</p>
+          <div>
+            <h1 className="mb-4">Home Page</h1>
+            <p className="alert alert-warning">No user logged in</p>
+          </div>
         )}
         
       </div>

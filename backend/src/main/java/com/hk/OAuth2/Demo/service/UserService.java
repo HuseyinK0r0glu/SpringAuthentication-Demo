@@ -45,6 +45,10 @@ public class UserService {
         return userRepository.findById(userId).orElse(null);
     }
 
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
     // for oauth2 logins
     public User createUser(String userName , String email , String provider , String oauth2Id , String picture) {
 
