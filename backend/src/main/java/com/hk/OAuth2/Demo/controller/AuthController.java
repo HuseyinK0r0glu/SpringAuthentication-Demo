@@ -236,14 +236,13 @@ public class AuthController {
             );
 
             String token = jwtUtil.generateToken(user.getEmail());
+            // send jwt token to frontend
             response.put("token",token);
 
             response.put("message","Login Successful");
             response.put("id" , user.getId());
             response.put("email",user.getEmail());
             response.put("name",user.getUsername());
-            // here we are sending raw to frontend change this when we add JWT logic
-            response.put("password",loginRequest.getPassword());
             response.put("local_picture",user.getLocalPicture());
 
             return ResponseEntity.ok(response);

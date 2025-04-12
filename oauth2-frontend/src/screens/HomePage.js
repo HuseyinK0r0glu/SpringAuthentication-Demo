@@ -3,12 +3,12 @@ import {Context as UserContext} from "../context/UserContext";
 import defaultUserImage from "../assets/defaultUserImage.jpeg"
 
 const HomePage = () => {
-
+  
     const {state,setUser} = useContext(UserContext);
-
     const[isAuthenticated,setIsAuthenticated] = useState(false);
 
     useEffect(() => {
+    
       const userFromStorage = localStorage.getItem("user");
       if(userFromStorage){
         const parsedUser = JSON.parse(userFromStorage);
