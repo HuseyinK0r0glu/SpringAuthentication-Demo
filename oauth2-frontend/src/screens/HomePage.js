@@ -24,8 +24,8 @@ const HomePage = () => {
  
     return (
       <div className="container text-center mt-5">
-        {isAuthenticated ? 
-          state.user.roles.includes("ROLE_ADMIN") ? (
+        {isAuthenticated && state.user ? 
+          (state.user?.roles || []).includes("ROLE_ADMIN") ? (
             <AdminPage/>
           ) : ( 
               <div>

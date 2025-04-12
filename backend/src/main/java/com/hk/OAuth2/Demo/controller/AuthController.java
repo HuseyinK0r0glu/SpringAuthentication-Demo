@@ -300,6 +300,7 @@ public class AuthController {
         response.put("oauth2Id" , user.getOauth2Id());
         response.put("picture" , picture);
         response.put("token" , tokenJwt);
+        response.put("roles" , user.getRoles());
 
         return ResponseEntity.ok(response);
     }

@@ -23,11 +23,12 @@ const AdminPage = () => {
 
                 if(data.invalidToken){
                     logout();
+                    localStorage.clear();
                     navigate("/login?message=session-expired");
                     return;  
                 }
 
-                console.log(data);
+                localStorage.setItem("users",JSON.stringify(data));
                 setUsers(data);
 
             }catch(error){
@@ -68,7 +69,12 @@ const AdminPage = () => {
                                 )}
                                 <h2 className="h5 mb-1">{user.username}</h2>
                                 <p className="text-muted mb-3">{user.email}</p>
-                                <button className="btn btn-primary btn-sm">View Profile</button>
+
+                                <button className="btn btn-primary btn-sm" 
+                                    onClick={() => navigate(`/user-profile?id=${user.id}`)}
+                                >
+                                    View Profile
+                                </button>
                             </div>
                         </div>
                     </div>

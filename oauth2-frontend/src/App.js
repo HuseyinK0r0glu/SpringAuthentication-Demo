@@ -11,6 +11,7 @@ import SettingsPage from './screens/SettingsPage';
 import DeleteAccountPage from './screens/DeleteAccountPage';
 import ForgotPasswordPage from './screens/ForgotPasswordFlow/ForgotPasswordPage';
 import NewPasswordPage from './screens/ForgotPasswordFlow/NewPasswordPage';
+import UserPage from './screens/UserPage';
 import UploadProfilePicture from './screens/UploadProfilePicture';
 import { Navbar } from './Navbar';
 import { Provider as UserProvider } from './context/UserContext';
@@ -37,6 +38,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />}/>
           <Route path="/new-password" element={<NewPasswordPage />}/>
           <Route path="/upload-profile-picture" element={<UploadProfilePicture />}/>
+          <Route path="/user-profile" element={<UserPage />}/>
         </Routes>
       </Router>
     </UserProvider>
