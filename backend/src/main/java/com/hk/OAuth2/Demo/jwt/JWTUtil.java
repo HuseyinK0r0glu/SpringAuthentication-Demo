@@ -1,5 +1,6 @@
 package com.hk.OAuth2.Demo.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JWTUtil {
@@ -30,12 +32,13 @@ public class JWTUtil {
         System.out.println("JWT Secret loaded and secret key generated.");
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username , List<String> roles) {
         try {
             // expiration time is 2 minutes for test purposes change it later
             long EXPIRATION_TIME = 2 * 60 * 1000;
             return Jwts.builder()
                     .setSubject(username)
+                    .claim("roles", roles)
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                     .signWith(secretKey)
@@ -59,6 +62,12 @@ public class JWTUtil {
 
     public String getUsername(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public List<String> getRoles(String token) {
+        // claims is payload of JSON
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+        return claims.get("roles", List.class);
     }
 
 }

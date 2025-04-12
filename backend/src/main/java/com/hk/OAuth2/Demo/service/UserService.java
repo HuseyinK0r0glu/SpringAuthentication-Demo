@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -55,6 +56,7 @@ public class UserService {
 
         User user = new User(userName,email,provider,oauth2Id,picture);
 
+        user.setRoles(List.of("ROLE_USER"));
         user.setVerified(1);
 
         return userRepository.save(user);
@@ -75,6 +77,7 @@ public class UserService {
         user.setVerified(0);
         user.setVerificationToken(token);
         user.setExpiryTime(expiryTime);
+        user.setRoles(List.of("ROLE_USER"));
 
         return userRepository.save(user);
     }

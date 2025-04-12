@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -235,7 +233,7 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
             );
 
-            String token = jwtUtil.generateToken(user.getEmail());
+            String token = jwtUtil.generateToken(user.getEmail(),user.getRoles());
             // send jwt token to frontend
             response.put("token",token);
 
@@ -244,6 +242,7 @@ public class AuthController {
             response.put("email",user.getEmail());
             response.put("name",user.getUsername());
             response.put("local_picture",user.getLocalPicture());
+            response.put("roles",user.getRoles());
 
             return ResponseEntity.ok(response);
 
@@ -290,7 +289,7 @@ public class AuthController {
 
         User user = userService.createUser(name , email , provider, oauth2Id , picture);
 
-        String tokenJwt = jwtUtil.generateToken(user.getEmail());
+        String tokenJwt = jwtUtil.generateToken(user.getEmail(),user.getRoles());
 
         // Return user details as JSON for frontend
         Map<String,Object> response = new HashMap<>();
