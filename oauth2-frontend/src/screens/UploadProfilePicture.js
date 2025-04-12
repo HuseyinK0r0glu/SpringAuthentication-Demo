@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Context as UserContext } from "../context/UserContext";
 import { authFetch } from "../components/ApiClient";
 
 const UploadProfilePicture = () => {
+
+    const {logout} = useContext(UserContext);
 
     const navigate = useNavigate();
     const [file,setFile] = useState(null);
@@ -11,7 +14,7 @@ const UploadProfilePicture = () => {
 
     const handleFileChange = (e) => {
         if(e.target.files  && e.target.files[0]){
-            setFile(e.target.files[0]);
+            setFile(e.target.files[0]); 
         }
     };
 
@@ -26,10 +29,10 @@ const UploadProfilePicture = () => {
             const data = await authFetch("http://localhost:8080/api/users/upload-profile-picture",{
                 method : 'POST',
                 body : formData,
-                credentials : "include"
             },true);
 
             if(data.invalidToken){
+                logout();
                 navigate("/login?message=session-expired");
                 return;
               }

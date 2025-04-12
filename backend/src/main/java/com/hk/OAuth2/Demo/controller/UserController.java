@@ -177,6 +177,15 @@ public class UserController {
             uploadDir.mkdirs();
         }
 
+        // if user have a profile picture we need to delete that before adding new one
+        String oldProfilePicturePath = user.getLocalPicture();
+        if(oldProfilePicturePath != null) {
+            File oldImage = new File(oldProfilePicturePath);
+            if(oldImage.exists()) {
+                oldImage.delete();
+            }
+        }
+
         String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
         Path path = Paths.get(directory, filename).toAbsolutePath().normalize();
         Files.copy(image.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
