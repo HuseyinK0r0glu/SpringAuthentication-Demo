@@ -1,4 +1,4 @@
-import { useState,useContext } from "react";
+import { useState,useContext, useEffect } from "react";
 import { Context as UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import PasswordValidation from "../../components/PasswordValidation";
@@ -81,52 +81,59 @@ const UpdatePasswordPage = () => {
 
     return(
         <div className="container mt-5">
-            <h2 className="text-center mb-4">Change Password</h2>
 
             <div className="card p-4 shadow-sm" style={{ maxWidth: "600px", margin: "auto" }}>
                 <h3 className="text-center mb-4">Change Password</h3>
 
-                <div className="form-group mb-3">
-                    <label htmlFor="password" className="form-label">New Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        className="form-control"
-                        placeholder="New Password"
-                        value={password}
-                        onChange={handlePasswordChange}
-                    />
-                </div>
+                {state.user?.provider ? (
+                    <div className="alert alert-info text-center">
+                        You logged in via <strong>{state.user.provider}</strong>, so you cannot change your password.
+                    </div>
+                ) : (
+                    <div>
+                        <div className="form-group mb-3">
+                        <label htmlFor="password" className="form-label">New Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            className="form-control"
+                            placeholder="New Password"
+                            value={password}
+                            onChange={handlePasswordChange}
+                        />
+                        </div>
 
-                <div className="form-group mb-3">
-                    <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                        className="form-control"
-                        placeholder="Confirm Password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                </div>
+                        <div className="form-group mb-3">
+                        <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            className="form-control"
+                            placeholder="Confirm Password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                        </div>
 
-                <PasswordValidation password={password} setIsValid={setIsValid} setPasswordRules={setPasswordRules}/>
+                        <PasswordValidation password={password} setIsValid={setIsValid} setPasswordRules={setPasswordRules}/>
 
-                {error && <p className="text-danger mt-2">{error}</p>}
+                        {error && <p className="text-danger mt-2">{error}</p>}
 
-                <button
-                    onClick={updatePassword}
-                    className="btn btn-primary btn-lg w-100 mt-1"
-                    disabled={!isValid}
-                >
-                    Update Password
-                </button>
+                        <button
+                        onClick={updatePassword}
+                        className="btn btn-primary btn-lg w-100 mt-1"
+                        disabled={!isValid}
+                        >
+                        Update Password
+                        </button>
 
-                {status === "failed" && (
-                    <p className="text-danger mt-2">{message}</p>
-                )}
-                {status === "success" && (
-                    <p className="text-success mt-2">{message}</p>
+                        {status === "failed" && (
+                        <p className="text-danger mt-2">{message}</p>
+                        )}
+                        {status === "success" && (
+                        <p className="text-success mt-2">{message}</p>
+                        )}
+                    </div>
                 )}
             </div>
         </div>

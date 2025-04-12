@@ -69,21 +69,21 @@ const SettingsPage = () => {
                     <i className="fas fa-user-edit me-2"></i> Update Username
                   </button>
 
-                  <button
-                    className="btn btn-secondary btn-lg w-100 mt-3"
-                    onClick={() => navigate("/update-password")}
-                  >
-                    <i className="fas fa-key me-2"></i> Update Password
-                  </button>
+                  {!state.user?.provider && (
+                      <button
+                        className="btn btn-secondary btn-lg w-100 mt-3"
+                        onClick={() => navigate("/update-password")}
+                      >
+                        <i className="fas fa-key me-2"></i> Update Password
+                      </button>
+                  )}
 
-                  {state.user.provider !== null && (
-                    <button
+                  <button
                       className="btn btn-info btn-lg w-100 mt-3"
                       onClick={() => navigate("/upload-profile-picture")}
                     >
                       <i className="fas fa-image me-2"></i> Change Profile Picture
-                    </button>
-                  )}
+                  </button>
 
                   <button 
                     className="btn btn-danger btn-lg w-100 mt-3"

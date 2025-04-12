@@ -1,10 +1,22 @@
-import { useContext } from "react";
+import { useContext , useEffect} from "react";
 import { NavLink } from "react-router-dom";
 import { Context as UserContext } from "./context/UserContext";
 
 export const Navbar = () => {
 
-  const {state : {user}} = useContext(UserContext);
+  const {state , setUser} = useContext(UserContext);
+
+  const user = state.user;
+
+    useEffect(() => {
+      const userFromStorage = localStorage.getItem("user");
+      if(userFromStorage){
+        const parsedUser = JSON.parse(userFromStorage);
+        if(!state.user || state.user.id !== parsedUser.id){
+          setUser(parsedUser);
+        }
+      }
+    },[]);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark py-3" style={{ backgroundColor: "#2c3e50" }}>
