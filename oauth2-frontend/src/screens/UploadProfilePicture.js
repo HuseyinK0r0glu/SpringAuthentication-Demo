@@ -7,6 +7,7 @@ const UploadProfilePicture = () => {
     const navigate = useNavigate();
     const [file,setFile] = useState(null);
     const [error,setError] = useState("");
+    const [message,setMessage] = useState("");
 
     const handleFileChange = (e) => {
         if(e.target.files  && e.target.files[0]){
@@ -34,8 +35,9 @@ const UploadProfilePicture = () => {
               }
 
             setError("");
+            setMessage("Profile picture added successfully");
             console.log(data);
-            setTimeout(() => navigate("/settings") , 2000);
+            setTimeout(() => navigate("/settings") , 1000);
 
         }catch(err){
             console.error(err.message || "Upload failed:", err);
@@ -52,6 +54,7 @@ const UploadProfilePicture = () => {
             Upload
           </button>
           {error && <p className="text-danger mt-2">{error}</p>}
+          {message && <p className="text-success mt-2">{message}</p>}
         </div>
       );
 };
