@@ -31,6 +31,10 @@ public class UserService {
         return userRepository.findByVerificationToken(verificationToken).orElse(null);
     }
 
+    public boolean existsByUserName(String username){
+        return userRepository.existsByUsername(username);
+    }
+
     // for update the user
     public void save(User user) {
         userRepository.save(user);

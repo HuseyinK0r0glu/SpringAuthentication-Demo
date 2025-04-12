@@ -13,6 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByOauth2Id(String oauth2Id);
     Optional<User> findByUsername(String username);
     Optional<User> findByVerificationToken(String verificationToken);
+    boolean existsByUsername(String username);
     void deleteById(Long id);
 
 }

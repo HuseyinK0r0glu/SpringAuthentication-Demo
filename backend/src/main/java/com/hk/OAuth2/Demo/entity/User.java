@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -47,6 +49,12 @@ public class User {
 
     @Column(name = "expiry_time")
     private LocalDateTime expiryTime;
+
+    // it stores the roles in another table
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles" , joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "roles")
+    private List<String> roles = new ArrayList<>();
 
     public User() {
     }
