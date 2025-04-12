@@ -22,6 +22,7 @@ const SignUpPage = () => {
         lowercase : false,
         number : false,
         specialChar : false,
+        noWhiteSpace : false
       });
 
     const handlePasswordChange = (event) => {

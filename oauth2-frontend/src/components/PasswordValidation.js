@@ -8,6 +8,7 @@ const PasswordValidation = ({password,setIsValid,setPasswordRules}) => {
         lowercase : false,
         number : false,
         specialChar : false,
+        noWhiteSpace : false
       });
   
       // regex expression for password validation
@@ -17,6 +18,7 @@ const PasswordValidation = ({password,setIsValid,setPasswordRules}) => {
         lowercase : /[a-z]/,
         number : /[0-9]/,
         specialChar : /[!@#$%^&*(),.?":{}|<>]/,
+        noWhiteSpace : /^[^\s]*$/
       };
   
       const checkPasswordStrength = () => {
@@ -28,7 +30,8 @@ const PasswordValidation = ({password,setIsValid,setPasswordRules}) => {
         newRules.lowercase = validations.lowercase.test(password);
         newRules.number = validations.number.test(password);
         newRules.specialChar = validations.specialChar.test(password);
-  
+        newRules.noWhiteSpace = validations.noWhiteSpace.test(password);
+        
         setLocalPasswordRules(newRules);
   
         const isPasswordValid = Object.values(newRules).every((
@@ -38,7 +41,6 @@ const PasswordValidation = ({password,setIsValid,setPasswordRules}) => {
         setPasswordRules(newRules);
       };
       
-
       useEffect(() => {
         checkPasswordStrength();
       },[password,setIsValid,setPasswordRules]);
@@ -68,6 +70,11 @@ const PasswordValidation = ({password,setIsValid,setPasswordRules}) => {
             {!localPasswordRules.specialChar && (
               <li style={{ color: 'red' }}>
                 Must contain at least one special character
+              </li>
+            )}
+            {!localPasswordRules.noWhiteSpace && (
+              <li style={{ color: 'red' }}>
+                Must not contain a white space
               </li>
             )}
             </ul>
