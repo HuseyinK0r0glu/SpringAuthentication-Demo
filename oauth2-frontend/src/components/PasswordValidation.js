@@ -46,7 +46,7 @@ const PasswordValidation = ({password,setIsValid,setPasswordRules}) => {
       },[password,setIsValid,setPasswordRules]);
 
     return(
-        <ul className="mt-2 text-left">
+        <ul className="mt-2 text-left mb-0">
             {!localPasswordRules.minLength && (
               <li style={{ color: 'red' }}>
                 Password must be between 8 and 30 characters
