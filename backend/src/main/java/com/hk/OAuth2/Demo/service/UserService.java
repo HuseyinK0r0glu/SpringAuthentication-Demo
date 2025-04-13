@@ -62,7 +62,6 @@ public class UserService {
 
         user.setRoles(List.of("ROLE_USER"));
         user.setVerified(1);
-        user.setFailedAttempts(0);
 
         return userRepository.save(user);
     }

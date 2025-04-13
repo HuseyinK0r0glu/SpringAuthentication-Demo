@@ -59,6 +59,10 @@ public class User {
     @Column(name = "failed_attempts")
     private int failedAttempts;
 
+    // it is the time when user locked
+    @Column(name = "lock_time")
+    private LocalDateTime lockTime;
+
     public User() {
     }
 

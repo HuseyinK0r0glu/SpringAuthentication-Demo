@@ -28,6 +28,7 @@ public class AdminInitializer implements CommandLineRunner {
             admin.setVerified(1);
             admin.setEmail("admin@hk.com");
             admin.setRoles(Arrays.asList("ROLE_ADMIN", "ROLE_USER"));
+            admin.setFailedAttempts(0);
             userService.save(admin);
         }
     }

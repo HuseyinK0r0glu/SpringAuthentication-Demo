@@ -21,6 +21,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -210,8 +211,10 @@ public class AuthController {
 
         // loginRequest contains email and password
 
+        User user = userService.findByEmail(loginRequest.getEmail());
+
         try{
-            User user = userService.findByEmail(loginRequest.getEmail());
+
             Map<String,Object> response = new HashMap<>();
 
             if(user == null) {
@@ -224,6 +227,60 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
 
+            if(user.getFailedAttempts() >= 3){
+                LocalDateTime lockTimeOfUser = user.getLockTime();
+                if(lockTimeOfUser == null) {
+                    // if we have not locked the user
+                    LocalDateTime now = LocalDateTime.now();
+                    user.setLockTime(now);
+                    userService.save(user);
+                    // change this to 10 later
+                    response.put("error", "You have exceeded 3 attempts. Please try again in 1 minutes.");
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+                }else {
+                    // we will check the necessary time is passed
+                    // if passed we can continue to log in
+                    // if not we will return minutes left
+
+                    // change this to 10 minutes
+                    // for test purposes we set 1
+                    LocalDateTime unlockTime = lockTimeOfUser.plusMinutes(1);
+                    if(LocalDateTime.now().isBefore(unlockTime)) {
+                        Duration duration = Duration.between(LocalDateTime.now(), unlockTime);
+                        long total = duration.getSeconds();
+                        long minutes = total / 60;
+                        long seconds = total % 60;
+
+                        StringBuilder errorMessage = new StringBuilder("Account is locked. Try again in ");
+
+                        if(minutes > 0){
+                            if(minutes == 1){
+                                errorMessage.append("1 minute");
+                            }else {
+                                errorMessage.append(minutes).append(" minutes");
+                            }
+                            if (seconds > 0) errorMessage.append(" and ");
+                        }
+
+                        if(seconds > 0){
+                            if(seconds == 1){
+                                errorMessage.append("1 second");
+                            }else {
+                                errorMessage.append(seconds).append(" seconds");
+                            }
+                        }
+                        errorMessage.append(".");
+
+                        response.put("error" , errorMessage.toString());
+                        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+                    }else {
+                        user.setLockTime(null);
+                        user.setFailedAttempts(0);
+                        userService.save(user);
+                    }
+                }
+            }
+
             if(user.getProvider() != null){
                 response.put("error", "Please log in using " + user.getProvider());
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
@@ -232,6 +289,9 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
             );
+
+            user.setFailedAttempts(0);
+            userService.save(user);
 
             String token = jwtUtil.generateToken(user.getEmail(),user.getRoles());
             // send jwt token to frontend
@@ -243,12 +303,34 @@ public class AuthController {
             response.put("name",user.getUsername());
             response.put("local_picture",user.getLocalPicture());
             response.put("roles",user.getRoles());
+            response.put("failed_attempts",user.getFailedAttempts());
 
             return ResponseEntity.ok(response);
 
         }catch (Exception e){
             Map<String,Object> response = new HashMap<>();
-            response.put("error", "Invalid username or password");
+            if (user != null) {
+                user.setFailedAttempts(user.getFailedAttempts() + 1);
+                userService.save(user);
+                int remainingAttempts = 3 - user.getFailedAttempts();
+                if (remainingAttempts > 0) {
+                    if(remainingAttempts == 1){
+                        response.put("error", "Invalid username or password.You have " + remainingAttempts + " attempt left.");
+                    }else {
+                        response.put("error", "Invalid username or password.You have " + remainingAttempts + " attempts left.");
+                    }
+                }else {
+                    LocalDateTime now = LocalDateTime.now();
+                    user.setLockTime(now);
+                    userService.save(user);
+                    // change this to 10 later
+                    response.put("error", "You have exceeded 3 attempts. Please try again in 1 minutes.");
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+                }
+            }else {
+                response.put("error", "Invalid username or password.");
+            }
+
             return ResponseEntity.badRequest().body(response);
         }
 
