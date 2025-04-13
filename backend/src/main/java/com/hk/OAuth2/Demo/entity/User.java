@@ -56,6 +56,9 @@ public class User {
     @Column(name = "roles")
     private List<String> roles = new ArrayList<>();
 
+    @Column(name = "failed_attempts")
+    private int failedAttempts;
+
     public User() {
     }
 
