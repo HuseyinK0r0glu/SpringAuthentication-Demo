@@ -52,7 +52,7 @@ function LoginPage() {
       
     }catch(error){
       console.log(error.message);
-      setError('Invalid username or password');
+      setError(error.message || 'Invalid username or password');
     }
 
   };

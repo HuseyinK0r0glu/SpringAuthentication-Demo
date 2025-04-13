@@ -29,6 +29,7 @@ const SettingsPage = () => {
         localStorage.removeItem("user");
         // remove jwt too
         localStorage.removeItem("token");
+        localStorage.clear();
         logout();
         navigate("/home");
     };

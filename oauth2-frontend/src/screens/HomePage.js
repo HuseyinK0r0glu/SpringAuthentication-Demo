@@ -16,6 +16,10 @@ const HomePage = () => {
 
       const checkToken = async () => {
         const token = localStorage.getItem("token");
+        
+        if(!token){
+          return;
+        }
 
         try{
           
@@ -53,7 +57,6 @@ const HomePage = () => {
         if(!token){
           logout();
           localStorage.clear();
-          navigate("/login?message=session-expired");
           return;
         }
 
