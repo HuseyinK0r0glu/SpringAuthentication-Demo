@@ -32,6 +32,10 @@ public class UserService {
         return userRepository.findByVerificationToken(verificationToken).orElse(null);
     }
 
+    public User findByPhoneNumber(String phoneNumber) {
+        return userRepository.findByPhoneNumber(phoneNumber).orElse(null);
+    }
+
     public boolean existsByUserName(String username){
         return userRepository.existsByUsername(username);
     }
@@ -66,7 +70,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User saveUserForTraditionalLogin(String userName , String email , String password , String token, LocalDateTime expiryTime) {
+    public User saveUserForTraditionalLogin(String userName , String email , String password , String token, LocalDateTime expiryTime,String phoneNumber) {
 
         Optional<User> existingUser = userRepository.findByEmail(email);
 
@@ -83,6 +87,8 @@ public class UserService {
         user.setExpiryTime(expiryTime);
         user.setRoles(List.of("ROLE_USER"));
         user.setFailedAttempts(0);
+        user.setPhoneNumber(phoneNumber);
+        user.setPhoneVerified(false);
 
         return userRepository.save(user);
     }

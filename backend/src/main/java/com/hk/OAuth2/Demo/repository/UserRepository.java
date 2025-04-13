@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByOauth2Id(String oauth2Id);
     Optional<User> findByUsername(String username);
     Optional<User> findByVerificationToken(String verificationToken);
+    Optional<User> findByPhoneNumber(String phoneNumber);
     boolean existsByUsername(String username);
     List<User> findAll();
     void deleteById(Long id);

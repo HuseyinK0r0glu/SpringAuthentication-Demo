@@ -60,8 +60,6 @@ const SignUpPage = () => {
 
         try{    
 
-            // add phone to the body
-            // send phone to backend as well
             const data = await authFetch('http://localhost:8080/api/auth/signup',{
               method: 'POST',
               headers: {
@@ -71,7 +69,8 @@ const SignUpPage = () => {
                 username,
                 email,
                 password,
-                confirmPassword
+                confirmPassword,
+                phoneNumber : phone
               }),
             },false);
 

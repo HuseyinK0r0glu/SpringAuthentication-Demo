@@ -63,6 +63,18 @@ public class User {
     @Column(name = "lock_time")
     private LocalDateTime lockTime;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "phone_verified")
+    private boolean phoneVerified;
+
+    @Column(name = "verification_code")
+    private String verificationCode;
+
+    @Column(name = "verification_code_sent_at")
+    private LocalDateTime verificationCodeSentAt;
+
     public User() {
     }
 

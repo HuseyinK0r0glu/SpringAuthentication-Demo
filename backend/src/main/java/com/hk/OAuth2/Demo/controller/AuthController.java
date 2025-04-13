@@ -51,7 +51,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody UserSignUpDto userSignUpDto) throws IOException {
 
-        // userSignUpDto contains email,username,password,confirmPassword
+        // userSignUpDto contains email,username,password,confirmPassword,phone number
 
         Map<String, String> response = new HashMap<>();
 
@@ -70,6 +70,11 @@ public class AuthController {
             return ResponseEntity.badRequest().body(response);
         }
 
+        if(userService.findByPhoneNumber(userSignUpDto.getPhoneNumber()) != null) {
+            response.put("error", "Phone number is already in use.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
         String passwordValidationResult = PasswordValidationService.validatePassword(userSignUpDto.getPassword());
 
         if (passwordValidationResult != null) {
@@ -81,7 +86,7 @@ public class AuthController {
         // generate verification token
         String token = UUID.randomUUID().toString();
         LocalDateTime expiryTime = LocalDateTime.now().plusHours(24);
-        User user = userService.saveUserForTraditionalLogin(userSignUpDto.getUsername() , userSignUpDto.getEmail() , userSignUpDto.getPassword(), token , expiryTime);
+        User user = userService.saveUserForTraditionalLogin(userSignUpDto.getUsername() , userSignUpDto.getEmail() , userSignUpDto.getPassword(), token , expiryTime,userSignUpDto.getPhoneNumber());
 
         emailService.sendEmail(userSignUpDto.getEmail() , "Verify your email", "Click the link to verify your email: http://localhost:3000/verify?token=" + token);
         response.put("message", "Registration successful. Check your email for verification.");
