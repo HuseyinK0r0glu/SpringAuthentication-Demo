@@ -229,7 +229,7 @@ public class AuthController {
 
             if (user.getVerified() == 0) {
                 response.put("error", "Email is not verified. Please verify your email before logging in.");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
             if(user.getFailedAttempts() >= 3){
