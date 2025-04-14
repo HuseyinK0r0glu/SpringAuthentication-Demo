@@ -58,6 +58,8 @@ public class UserController {
             return ResponseEntity.badRequest().body(response);
         }
 
+        // database Unicode changed to utf8mb4 that supports case sensivity
+        // ALTER TABLE users MODIFY user_name VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
         User existingUser = userService.findByUsername(updateUserNameRequest.getUsername());
         if(existingUser != null && !existingUser.getId().equals(user.getId())) {
             response.put("error", "Username is already in use.");
