@@ -1,4 +1,5 @@
 import './App.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './screens/auth/LoginPage';
 import HomePage from './screens/general/HomePage';
@@ -15,6 +16,7 @@ import UserPage from './screens/general/UserPage';
 import UploadProfilePicture from './screens/profile/UploadProfilePicture';
 import VerifyPhoneNumberPage from './screens/auth/PhoneNumberFlow/VerifyPhoneNumber';
 import AddPhoneNumberPage from './screens/auth/PhoneNumberFlow/AddPhoneNumber';
+import ContentPage from './screens/content/ContentPage';
 import { Navbar } from './Navbar';
 import { Provider as UserProvider } from './context/UserContext';
 
@@ -43,6 +45,7 @@ function App() {
           <Route path="/user-profile" element={<UserPage />}/>
           <Route path="/verify-phone-number" element={<VerifyPhoneNumberPage />}/> 
           <Route path="/add-phone-number" element={<AddPhoneNumberPage />}/>
+          <Route path="/content" element={<ContentPage />}/>
         </Routes>
       </Router>
     </UserProvider>

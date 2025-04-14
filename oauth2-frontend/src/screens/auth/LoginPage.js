@@ -58,18 +58,19 @@ function LoginPage() {
   };
 
 return (
-  <div className="container text-center mt-5">
-    <h1 className="mb-4">Login</h1>
+  <div className="container d-flex justify-content-center align-items-center mt-5">
+    <div className="card shadow-sm p-4" style={{ width: '100%', maxWidth: '500px' }}>
+      <h2 className="text-center mb-4">Login</h2>
 
-    <div className="d-flex flex-column align-items-center justify-content-center">
       {message === "session-expired" && (
-        <div className="alert alert-warning text-center mt-3" role="alert">
+        <div className="alert alert-warning text-center" role="alert">
           <strong>Your session has timed out:</strong> Please log in again to continue.
         </div>
       )}
+
       {/* Traditional Login Form */}
-      <form onSubmit={handleTraditionalLogin} className="w-50 mb-4">
-        <div className="form-group text-start">
+      <form onSubmit={handleTraditionalLogin}>
+        <div className="mb-3">
           <label htmlFor="email" className="form-label">Email</label>
           <input
             type="email"
@@ -82,7 +83,7 @@ return (
           />
         </div>
 
-        <div className="form-group text-start mt-3">
+        <div className="mb-3">
           <label htmlFor="password" className="form-label">Password</label>
           <input
             type="password"
@@ -106,29 +107,36 @@ return (
 
         {error && <p className="text-danger mt-2">{error}</p>}
 
-        <button type="submit" className="btn btn-primary btn-lg mt-4 w-100">
+        <button type="submit" className="btn btn-primary w-100 mt-3">
           Login with Email
         </button>
       </form>
 
+      <div className="text-center my-3">
+        <span>or</span>
+      </div>
+
       {/* OAuth2 Login Buttons */}
-      <div className="d-flex flex-column align-items-center w-50">
+      <div className="d-flex justify-content-center gap-3">
         <button 
-          className="btn btn-danger btn-lg mb-3 w-100" 
-          onClick={() => handleLogin("google")}
+          className="btn btn-outline-danger rounded-circle p-3" 
+          onClick={() => handleLogin("google")} 
+          title="Login with Google"
         >
-          <i className="fab fa-google me-2"></i> Login with Google
+          <i className="fab fa-google fa-lg"></i>
         </button>
+
         <button 
-          className="btn btn-dark btn-lg w-100" 
-          onClick={() => handleLogin("github")}
+          className="btn btn-outline-dark rounded-circle p-3" 
+          onClick={() => handleLogin("github")} 
+          title="Login with GitHub"
         >
-          <i className="fab fa-github me-2"></i> Login with GitHub
+          <i className="fab fa-github fa-lg"></i>
         </button>
       </div>
 
       {/* Sign Up Option */}
-      <div className="mt-4">
+      <div className="text-center mt-4">
         <p>
           Don't have an account?{" "}
           <button 

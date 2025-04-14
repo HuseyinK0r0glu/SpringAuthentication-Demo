@@ -96,19 +96,26 @@ const HomePage = () => {
                   <h2 className="h4">Welcome, {state.user.name}</h2>
                   <p className="text-muted">Email: {state.user.email}</p>
                   
+                  <button
+                      className="btn btn-primary btn-lg w-100 mt-3"
+                      onClick={() => navigate("/content")}
+                    >
+                      <i className="fas fa-pen-nib me-2"></i> Create content
+                  </button>
+
                   {state.user.phone && state.user.phone_verified === false ? (
                     <button
-                        className="btn btn-info btn-lg w-100 mt-3"  
-                        onClick={() => navigate("/verify-phone-number")}
-                      >
-                        <i className="fas fa-image me-2"></i> Verify your phone number 
+                      className="btn btn-info btn-lg w-100 mt-3"
+                      onClick={() => navigate("/verify-phone-number")}
+                    >
+                      <i className="fas fa-check-circle me-2"></i> Verify your phone number
                     </button>
-                  ): (
+                  ) : (
                     <button
-                        className="btn btn-info btn-lg w-100 mt-3"  
-                        onClick={() => navigate("/add-phone-number")}
-                      >
-                        <i className="fas fa-image me-2"></i> Add your phone number 
+                      className="btn btn-info btn-lg w-100 mt-3"
+                      onClick={() => navigate("/add-phone-number")}
+                    >
+                      <i className="fas fa-phone me-2"></i> Add your phone number
                     </button>
                   )}
 
