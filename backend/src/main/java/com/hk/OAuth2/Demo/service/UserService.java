@@ -62,10 +62,7 @@ public class UserService {
             return existingUser;
         }
 
-        User user = new User(userName,email,provider,oauth2Id,picture);
-
-        user.setRoles(List.of("ROLE_USER"));
-        user.setVerified(1);
+        User user = new User(userName,email,provider,oauth2Id,picture,List.of("ROLE_USER"),1);
 
         return userRepository.save(user);
     }
@@ -78,18 +75,7 @@ public class UserService {
             return existingUser.get();
         }
 
-        User user = new User();
-        user.setUsername(userName);
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setVerified(0);
-        user.setVerificationToken(token);
-        user.setExpiryTime(expiryTime);
-        user.setRoles(List.of("ROLE_USER"));
-        user.setFailedAttempts(0);
-        user.setPhoneNumber(phoneNumber);
-        user.setPhoneVerified(false);
-
+        User user = new User(userName,email,passwordEncoder.encode(password),0,token,expiryTime, List.of("ROLE_USER"), 0,phoneNumber,false);
         return userRepository.save(user);
     }
 

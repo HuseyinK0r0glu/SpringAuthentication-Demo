@@ -85,13 +85,37 @@ public class User {
         this.password = password;
     }
 
+    public User(String username,
+                String email,
+                String password,
+                int verified,
+                String verificationToken,
+                LocalDateTime expiryTime,
+                List<String> roles,
+                int failedAttempts,
+                String phoneNumber,
+                boolean phoneVerified) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.verified = verified;
+        this.verificationToken = verificationToken;
+        this.expiryTime = expiryTime;
+        this.roles = roles;
+        this.failedAttempts = failedAttempts;
+        this.phoneNumber = phoneNumber;
+        this.phoneVerified = phoneVerified;
+    }
+
     // for oauth2 login
-    public User(String username, String email, String provider, String oauth2Id, String picture) {
+    public User(String username, String email, String provider, String oauth2Id, String picture,List<String> roles,int verified) {
         this.username = username;
         this.email = email;
         this.provider = provider;
         this.oauth2Id = oauth2Id;
         this.picture = picture;
+        this.roles = roles;
+        this.verified = verified;
     }
 
     @Override
