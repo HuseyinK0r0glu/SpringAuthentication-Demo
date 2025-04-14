@@ -66,6 +66,7 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Setter
     @Column(name = "phone_verified")
     private boolean phoneVerified;
 
@@ -102,4 +103,9 @@ public class User {
                 ", provider='" + provider + '\'' +
                 '}';
     }
+
+    public boolean getPhoneVerified() {
+        return phoneVerified;
+    }
+
 }

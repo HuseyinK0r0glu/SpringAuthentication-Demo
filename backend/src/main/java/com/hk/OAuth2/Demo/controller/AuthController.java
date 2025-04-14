@@ -309,6 +309,8 @@ public class AuthController {
             response.put("local_picture",user.getLocalPicture());
             response.put("roles",user.getRoles());
             response.put("failed_attempts",user.getFailedAttempts());
+            response.put("phone",user.getPhoneNumber());
+            response.put("phone_verified",user.getPhoneVerified());
 
             return ResponseEntity.ok(response);
 
