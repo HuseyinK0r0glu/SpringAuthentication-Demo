@@ -1,8 +1,8 @@
 import React , {useContext, useEffect, useState} from "react";
-import {Context as UserContext} from "../context/UserContext";
-import AdminPage from "./AdminPage";
-import defaultUserImage from "../assets/defaultUserImage.jpeg"
-import { authFetch } from "../components/ApiClient";
+import {Context as UserContext} from "../../context/UserContext";
+import AdminPage from "../admin/AdminPage";
+import defaultUserImage from "../../assets/defaultUserImage.jpeg"
+import { authFetch } from "../../components/ApiClient";
 import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
@@ -95,6 +95,23 @@ const HomePage = () => {
                   }
                   <h2 className="h4">Welcome, {state.user.name}</h2>
                   <p className="text-muted">Email: {state.user.email}</p>
+                  
+                  {state.user.phone && state.user.phone_verified === false ? (
+                    <button
+                        className="btn btn-info btn-lg w-100 mt-3"  
+                        onClick={() => navigate("/verify-phone-number")}
+                      >
+                        <i className="fas fa-image me-2"></i> Verify your phone number 
+                    </button>
+                  ): (
+                    <button
+                        className="btn btn-info btn-lg w-100 mt-3"  
+                        onClick={() => navigate("/add-phone-number")}
+                      >
+                        <i className="fas fa-image me-2"></i> Add your phone number 
+                    </button>
+                  )}
+
                 </div>
               </div>
         ) : (

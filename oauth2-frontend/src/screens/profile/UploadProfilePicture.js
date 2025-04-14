@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Context as UserContext } from "../context/UserContext";
-import { authFetch } from "../components/ApiClient";
+import { Context as UserContext } from "../../context/UserContext";
+import { authFetch } from "../../components/ApiClient";
 
 const UploadProfilePicture = () => {
 

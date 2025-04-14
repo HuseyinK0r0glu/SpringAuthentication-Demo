@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Context as UserContext } from "../context/UserContext";
-import { authFetch } from "../components/ApiClient";
+import { Context as UserContext } from "../../context/UserContext";
+import { authFetch } from "../../components/ApiClient";
 import { useNavigate } from "react-router-dom";
-import defaultUserImage from "../assets/defaultUserImage.jpeg"
+import defaultUserImage from "../../assets/defaultUserImage.jpeg"
 
 const AdminPage = () => {
 

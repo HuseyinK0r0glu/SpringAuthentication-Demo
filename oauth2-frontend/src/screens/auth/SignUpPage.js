@@ -1,7 +1,7 @@
 import React , {useState} from "react";
 import { useNavigate } from "react-router-dom";
-import PasswordValidation from "../components/PasswordValidation";
-import { authFetch } from "../components/ApiClient";
+import PasswordValidation from "../../components/PasswordValidation";
+import { authFetch } from "../../components/ApiClient";
 import PhoneInput from "react-phone-input-2";
 
 const SignUpPage = () => {

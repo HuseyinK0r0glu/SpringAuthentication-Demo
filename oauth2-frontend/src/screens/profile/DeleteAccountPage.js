@@ -1,7 +1,7 @@
 import React , {useContext, useState, useEffect} from "react";
-import { Context as UserContext } from "../context/UserContext";
+import { Context as UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import { authFetch } from "../components/ApiClient";
+import { authFetch } from "../../components/ApiClient";
 
 const DeleteAccountPage = () => {
 

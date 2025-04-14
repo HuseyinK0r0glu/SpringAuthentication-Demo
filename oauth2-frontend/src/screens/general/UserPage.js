@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import defaultUserImage from "../assets/defaultUserImage.jpeg"
+import defaultUserImage from "../../assets/defaultUserImage.jpeg"
 
 const UserPage = () => {
     

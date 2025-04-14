@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { authFetch } from "../../components/ApiClient";
+import { authFetch } from "../../../components/ApiClient";
 
 const ForgotPasswordPage = () => {
 

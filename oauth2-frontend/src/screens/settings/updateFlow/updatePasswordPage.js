@@ -1,8 +1,8 @@
 import { useState,useContext, useEffect } from "react";
-import { Context as UserContext } from "../../context/UserContext";
+import { Context as UserContext } from "../../../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import PasswordValidation from "../../components/PasswordValidation";
-import { authFetch } from "../../components/ApiClient";
+import PasswordValidation from "../../../components/PasswordValidation";
+import { authFetch } from "../../../components/ApiClient";
 
 const UpdatePasswordPage = () => {
 

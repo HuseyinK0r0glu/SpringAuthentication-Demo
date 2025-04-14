@@ -1,6 +1,6 @@
 import React , {useContext, useEffect, useState} from "react";
-import {Context as UserContext} from "../context/UserContext";
-import defaultUserImage from "../assets/defaultUserImage.jpeg"
+import {Context as UserContext} from "../../context/UserContext";
+import defaultUserImage from "../../assets/defaultUserImage.jpeg"
 import { useNavigate } from "react-router-dom";
 
 const SettingsPage = () => {

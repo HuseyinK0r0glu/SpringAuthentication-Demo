@@ -1,18 +1,20 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './screens/LoginPage';
-import HomePage from './screens/HomePage';
-import LoadingPage from './screens/LoadingPage';
-import SignUpPage from './screens/SignUpPage';
-import VerifyEmailPage from './screens/VerifyEmailPage';
-import UpdatePasswordPage from './screens/updateFlow/updatePasswordPage';
-import UpdateUsernamePage from './screens/updateFlow/updateUserNamePage';
-import SettingsPage from './screens/SettingsPage';
-import DeleteAccountPage from './screens/DeleteAccountPage';
-import ForgotPasswordPage from './screens/ForgotPasswordFlow/ForgotPasswordPage';
-import NewPasswordPage from './screens/ForgotPasswordFlow/NewPasswordPage';
-import UserPage from './screens/UserPage';
-import UploadProfilePicture from './screens/UploadProfilePicture';
+import LoginPage from './screens/auth/LoginPage';
+import HomePage from './screens/general/HomePage';
+import LoadingPage from './screens/general/LoadingPage';
+import SignUpPage from './screens/auth/SignUpPage';
+import VerifyEmailPage from './screens/auth/VerifyEmailPage';
+import UpdatePasswordPage from './screens/settings/updateFlow/updatePasswordPage';
+import UpdateUsernamePage from './screens/settings/updateFlow/updateUserNamePage';
+import SettingsPage from './screens/settings/SettingsPage';
+import DeleteAccountPage from './screens/profile/DeleteAccountPage';
+import ForgotPasswordPage from './screens/auth/ForgotPasswordFlow/ForgotPasswordPage';
+import NewPasswordPage from './screens/auth/ForgotPasswordFlow/NewPasswordPage';
+import UserPage from './screens/general/UserPage';
+import UploadProfilePicture from './screens/profile/UploadProfilePicture';
+import VerifyPhoneNumberPage from './screens/auth/PhoneNumberFlow/VerifyPhoneNumber';
+import AddPhoneNumberPage from './screens/auth/PhoneNumberFlow/AddPhoneNumber';
 import { Navbar } from './Navbar';
 import { Provider as UserProvider } from './context/UserContext';
 
@@ -39,6 +41,8 @@ function App() {
           <Route path="/new-password" element={<NewPasswordPage />}/>
           <Route path="/upload-profile-picture" element={<UploadProfilePicture />}/>
           <Route path="/user-profile" element={<UserPage />}/>
+          <Route path="/verify-phone-number" element={<VerifyPhoneNumberPage />}/> 
+          <Route path="/add-phone-number" element={<AddPhoneNumberPage />}/>
         </Routes>
       </Router>
     </UserProvider>
