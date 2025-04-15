@@ -74,6 +74,17 @@ const SignUpPage = () => {
               }),
             },false);
 
+            localStorage.setItem("signupRequest", JSON.stringify({
+              email,
+              username,
+              phoneNumber: phone
+            }));
+            
+            // for resending the verification token
+            const expiresAt = new Date().getTime() + 60 * 1000;
+            localStorage.setItem("cooldownEnd", expiresAt);
+              
+            setError("");
             alert(data.message || "Verification link is send! Please check your email!");
             navigate("/verify");
             

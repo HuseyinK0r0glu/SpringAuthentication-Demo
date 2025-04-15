@@ -1,9 +1,6 @@
 package com.hk.OAuth2.Demo.controller;
 
-import com.hk.OAuth2.Demo.dto.ForgotPasswordRequest;
-import com.hk.OAuth2.Demo.dto.LoginRequest;
-import com.hk.OAuth2.Demo.dto.UpdatePasswordRequest;
-import com.hk.OAuth2.Demo.dto.UserSignUpDto;
+import com.hk.OAuth2.Demo.dto.*;
 import com.hk.OAuth2.Demo.entity.PasswordResetToken;
 import com.hk.OAuth2.Demo.entity.User;
 import com.hk.OAuth2.Demo.jwt.JWTUtil;
@@ -123,6 +120,45 @@ public class AuthController {
 
         return ResponseEntity.ok("User verified successfully");
 
+    }
+
+    @PostMapping("/resend-verification")
+    public ResponseEntity<?> resendVerification(@RequestBody ResendVerificationRequest resendVerificationRequest) throws IOException {
+
+        Map<String,Object> response = new HashMap<>();
+
+        String email = resendVerificationRequest.getEmail();
+
+        if(email == null) {
+            response.put("error","Email is required");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        User user = userService.findByEmail(email);
+
+        if(user == null) {
+            response.put("error","User not found");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if (user.getVerified() == 1) {
+            response.put("error","User already verified.You can log in");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if(user.getExpiryTime().isBefore(LocalDateTime.now())) {
+            String token = UUID.randomUUID().toString();
+            LocalDateTime expiryTime = LocalDateTime.now().plusHours(24);
+            user.setVerificationToken(token);
+        }
+
+        // update the user
+        userService.save(user);
+
+        // send verify email again
+        emailService.sendEmail(user.getEmail() , "Verify your email", "Click the link to verify your email: http://localhost:3000/verify?token=" + user.getVerificationToken());
+        response.put("message", "Verification link resent successfully");
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/forgot-password")
