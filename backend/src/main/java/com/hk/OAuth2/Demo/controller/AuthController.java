@@ -333,8 +333,8 @@ public class AuthController {
 
             user.setFailedAttempts(0);
             userService.save(user);
-
-            String token = jwtUtil.generateToken(user.getEmail(),user.getRoles());
+            
+            String token = jwtUtil.generateToken(user.getEmail(),user.getRoles(),loginRequest.isRememberMe());
             // send jwt token to frontend
             response.put("token",token);
 
@@ -414,7 +414,8 @@ public class AuthController {
 
         User user = userService.createUser(name , email , provider, oauth2Id , picture);
 
-        String tokenJwt = jwtUtil.generateToken(user.getEmail(),user.getRoles());
+        // remember the oauth2 user
+        String tokenJwt = jwtUtil.generateToken(user.getEmail(),user.getRoles(),true);
 
         // Return user details as JSON for frontend
         Map<String,Object> response = new HashMap<>();

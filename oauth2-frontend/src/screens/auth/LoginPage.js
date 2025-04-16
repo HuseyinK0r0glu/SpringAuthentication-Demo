@@ -5,6 +5,8 @@ import { authFetch } from "../../components/ApiClient";
 
 function LoginPage() {
 
+  const[rememberMe,setRememberMe] = useState(false);
+
   const message = new URLSearchParams(window.location.search).get("message");
 
   const {setUser} = useContext(UserContext);
@@ -32,7 +34,8 @@ function LoginPage() {
         },
         body: JSON.stringify({
           email,
-          password
+          password,
+          rememberMe
         }),
         credentials: 'include'
       },false);
@@ -103,6 +106,19 @@ return (
               Forgot Password?
             </button>
           </div>
+        </div>
+
+        <div className="form-check mb-3">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="rememberMe"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+          />
+          <label className="form-check-label" htmlFor="rememberMe">
+            Remember Me
+          </label>
         </div>
 
         {error && <p className="text-danger mt-2">{error}</p>}

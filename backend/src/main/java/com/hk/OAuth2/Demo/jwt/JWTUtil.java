@@ -32,10 +32,11 @@ public class JWTUtil {
         System.out.println("JWT Secret loaded and secret key generated.");
     }
 
-    public String generateToken(String username , List<String> roles) {
+    public String generateToken(String username , List<String> roles,boolean rememberMe) {
         try {
             // expiration time is 2 minutes for test purposes change it later
-            long EXPIRATION_TIME = 2 * 60 * 1000;
+            long EXPIRATION_TIME = rememberMe ? 1000 * 60 * 60 * 24 : 2 * 60 * 1000;
+
             return Jwts.builder()
                     .setSubject(username)
                     .claim("roles", roles)
