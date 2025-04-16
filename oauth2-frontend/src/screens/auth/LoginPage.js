@@ -5,6 +5,8 @@ import { authFetch } from "../../components/ApiClient";
 
 function LoginPage() {
 
+  const[showPassword,setShowPassword] = useState(false); 
+
   const[rememberMe,setRememberMe] = useState(false);
 
   const message = new URLSearchParams(window.location.search).get("message");
@@ -88,15 +90,25 @@ return (
 
         <div className="mb-3">
           <label htmlFor="password" className="form-label">Password</label>
-          <input
-            type="password"
-            id="password"
-            className="form-control"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <div className="input-group">
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              className="form-control"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={() => setShowPassword(!showPassword)}
+              tabIndex={-1}
+            >
+              <i className={`fas ${showPassword ? "fa-eye-slash" : "fa-eye"}`}></i>
+            </button>
+          </div>
           <div className="text-end mt-1">
             <button 
               type="button" 
