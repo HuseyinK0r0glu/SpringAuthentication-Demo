@@ -17,6 +17,7 @@ import UploadProfilePicture from './screens/profile/UploadProfilePicture';
 import VerifyPhoneNumberPage from './screens/auth/PhoneNumberFlow/VerifyPhoneNumber';
 import AddPhoneNumberPage from './screens/auth/PhoneNumberFlow/AddPhoneNumber';
 import ContentPage from './screens/content/ContentPage';
+import FriendsPage from './screens/social/Friends';
 import { Navbar } from './Navbar';
 import { Provider as UserProvider } from './context/UserContext';
 
@@ -46,6 +47,7 @@ function App() {
           <Route path="/verify-phone-number" element={<VerifyPhoneNumberPage />}/> 
           <Route path="/add-phone-number" element={<AddPhoneNumberPage />}/>
           <Route path="/content" element={<ContentPage />}/>
+          <Route path="/friends" element={<FriendsPage />}/>
         </Routes>
       </Router>
     </UserProvider>

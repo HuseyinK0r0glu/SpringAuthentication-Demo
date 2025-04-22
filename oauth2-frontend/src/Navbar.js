@@ -21,7 +21,8 @@ export const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark py-3" style={{ backgroundColor: "#2c3e50" }}>
       <div className="container-fluid">
-        <span className="navbar-brand" style={{ color: "#f8f9fa" }}>HK</span>
+        <span className="navbar-brand fw-bold fs-4" style={{ color: "#f8f9fa" }}>HK</span>
+
         <button
           className="navbar-toggler"
           type="button"
@@ -29,15 +30,27 @@ export const Navbar = () => {
           data-bs-target="#navbarNavDropdown"
           aria-controls="navbarNavDropdown"
           aria-expanded="false"
-          aria-label="Toggle Navigation"
+          aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon" style={{ backgroundColor: "#f8f9fa" }}></span>
+          <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarNavDropdown">
-          <ul className="navbar-nav">
+
+        <div className="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+          <ul className="navbar-nav d-flex align-items-center gap-3">
             <li className="nav-item">
-              <NavLink className="nav-link" to="/home" style={{ color: "#f8f9fa" }}>Home</NavLink>
+              <NavLink className="nav-link d-flex align-items-center" to="/home">
+                <i className="fas fa-home me-2"></i>
+                Home
+              </NavLink>
             </li>
+            {user ? (
+                <li className="nav-item">
+                  <NavLink className="nav-link d-flex align-items-center" to="/friends">
+                    <i className="fas fa-user-friends me-2"></i>
+                    Friends
+                  </NavLink>
+                </li>
+            ) : (null)}
           </ul>
 
           <ul className="navbar-nav ms-auto">
