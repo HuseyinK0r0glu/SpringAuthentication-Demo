@@ -2,21 +2,14 @@ import React , {useContext, useState, useEffect} from "react";
 import { Context as UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../components/ApiClient";
+import useAuthSync from "../../hooks/useAuthSync";
 
 const DeleteAccountPage = () => {
 
     const {state , setUser ,logout} = useContext(UserContext);
     const [password,setPassword] = useState("");
 
-    useEffect(() => {
-      const userFromStorage = localStorage.getItem("user");
-      if(userFromStorage){
-        const parsedUser = JSON.parse(userFromStorage);
-        if(!state.user || state.user.id !== parsedUser.id){
-          setUser(parsedUser);
-        }
-      }
-    },[state.user]);
+    useAuthSync({user : state.user , setUser})
 
     const user = state.user || {};
 

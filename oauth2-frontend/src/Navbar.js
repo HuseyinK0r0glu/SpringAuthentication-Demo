@@ -1,22 +1,15 @@
-import { useContext , useEffect} from "react";
+import { useContext , useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
 import { Context as UserContext } from "./context/UserContext";
+import useAuthSync from "./hooks/useAuthSync";
 
 export const Navbar = () => {
 
+  const[isAuthenticated , setIsAuthenticated] = useState(false);
+
   const {state , setUser} = useContext(UserContext);
 
-  const user = state.user;
-
-    useEffect(() => {
-      const userFromStorage = localStorage.getItem("user");
-      if(userFromStorage){
-        const parsedUser = JSON.parse(userFromStorage);
-        if(!state.user || state.user.id !== parsedUser.id){
-          setUser(parsedUser);
-        }
-      }
-    },[]);
+  useAuthSync({user : state.user , setUser , setIsAuthenticated});
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark py-3" style={{ backgroundColor: "#2c3e50" }}>
@@ -43,7 +36,7 @@ export const Navbar = () => {
                 Home
               </NavLink>
             </li>
-            {user ? (
+            {isAuthenticated ? (
                 <li className="nav-item">
                   <NavLink className="nav-link d-flex align-items-center" to="/friends">
                     <i className="fas fa-user-friends me-2"></i>
@@ -54,7 +47,7 @@ export const Navbar = () => {
           </ul>
 
           <ul className="navbar-nav ms-auto">
-            {user ? (
+            {isAuthenticated ? (
               <>
                 <li className="nav-item dropdown">
                   <button 
@@ -63,7 +56,7 @@ export const Navbar = () => {
                     data-bs-toggle="dropdown" 
                     aria-expanded="false"
                   >
-                    {user.name || "User"}
+                    {state.user?.name || "User"}
                   </button>
                   <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li>

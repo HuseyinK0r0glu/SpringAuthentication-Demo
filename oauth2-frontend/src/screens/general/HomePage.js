@@ -4,6 +4,7 @@ import AdminPage from "../admin/AdminPage";
 import defaultUserImage from "../../assets/defaultUserImage.jpeg"
 import { authFetch } from "../../components/ApiClient";
 import { useNavigate } from "react-router-dom";
+import useAuthSync from "../../hooks/useAuthSync";
 
 const HomePage = () => {
   
@@ -13,6 +14,8 @@ const HomePage = () => {
     const[isAuthenticated,setIsAuthenticated] = useState(false);
 
     const[imageUrl,setImageUrl] = useState(null); 
+
+    useAuthSync({user : state.user, setUser, setIsAuthenticated});
 
     // for checking the profile picture
     useEffect(() => {
@@ -72,16 +75,17 @@ const HomePage = () => {
 
       };
 
-      const userFromStorage = localStorage.getItem("user");
-      if(userFromStorage){
-        const parsedUser = JSON.parse(userFromStorage);
-        if(!state.user || state.user.id !== parsedUser.id){
-          setUser(parsedUser);
-        }
-        setIsAuthenticated(true);
-      }else {
-        setIsAuthenticated(false);
-      }
+
+      // const userFromStorage = localStorage.getItem("user");
+      // if(userFromStorage){
+      //   const parsedUser = JSON.parse(userFromStorage);
+      //   if(!state.user || state.user.id !== parsedUser.id){
+      //     setUser(parsedUser);
+      //   }
+      //   setIsAuthenticated(true);
+      // }else {
+      //   setIsAuthenticated(false);
+      // }
 
       if(setIsAuthenticated){
 
