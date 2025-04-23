@@ -43,44 +43,39 @@ const SettingsPage = () => {
             {isAuthenticated ? ( 
             <div className="card p-4 shadow-sm" style={{ maxWidth: "400px", margin: "auto" }}>
 
-                {state.user.picture 
-                ? 
-                <img 
+                {state.user.local_picture
+                  ? 
+                  <img 
+                    src={imageUrl} 
+                    alt="Profile" 
+                    className="rounded-circle border mb-3"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                    }}
+                  />
+                  :
+                  state.user.picture 
+                  ?
+                  <img 
                     src={state.user.picture} 
                     alt="Profile" 
                     className="rounded-circle border mb-3"
                     width="100" 
                     height="100" 
-                />
-                :
-                state.user.local_picture 
-                ?
-                <img 
-                  src = {imageUrl}
-                  // src={`http://localhost:8080/${state.user.local_picture}`} 
-                  alt="Profile" 
-                  className="rounded-circle border mb-3"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    objectFit: "cover",
-                  }}
-                  onError={(e) => {
-                    e.target.onerror = null; 
-                    e.target.src = defaultUserImage;
-                  }}
-                />
-                : 
-                <img 
-                  src={defaultUserImage} 
-                  alt="Profile" 
-                  className="rounded-circle border mb-3"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    objectFit: "cover",
-                  }}
-                />
+                  />
+                  :
+                  <img 
+                    src={defaultUserImage} 
+                    alt="Profile" 
+                    className="rounded-circle border mb-3"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                    }}
+                  />
                 }
 
                 <h2 className="h4">{state.user.name}</h2>

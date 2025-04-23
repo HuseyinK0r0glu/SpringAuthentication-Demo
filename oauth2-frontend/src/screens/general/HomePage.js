@@ -45,18 +45,6 @@ const HomePage = () => {
 
       };
 
-
-      // const userFromStorage = localStorage.getItem("user");
-      // if(userFromStorage){
-      //   const parsedUser = JSON.parse(userFromStorage);
-      //   if(!state.user || state.user.id !== parsedUser.id){
-      //     setUser(parsedUser);
-      //   }
-      //   setIsAuthenticated(true);
-      // }else {
-      //   setIsAuthenticated(false);
-      // }
-
       if(setIsAuthenticated){
 
         const token = localStorage.getItem("token");
@@ -82,18 +70,9 @@ const HomePage = () => {
               <div>
                 <h1 className="mb-4">Home Page</h1>
                 <div className="card p-4 shadow-sm" style={{ maxWidth: "400px", margin: "auto" }}>
-                  {state.user.picture 
+
+                  {state.user.local_picture
                     ? 
-                    <img 
-                      src={state.user.picture} 
-                      alt="Profile" 
-                      className="rounded-circle border mb-3"
-                      width="100" 
-                      height="100" 
-                    />
-                    :
-                    state.user.local_picture 
-                    ?
                     <img 
                       src={imageUrl} 
                       alt="Profile" 
@@ -104,7 +83,17 @@ const HomePage = () => {
                         objectFit: "cover",
                       }}
                     />
-                    : 
+                    :
+                    state.user.picture 
+                    ?
+                    <img 
+                      src={state.user.picture} 
+                      alt="Profile" 
+                      className="rounded-circle border mb-3"
+                      width="100" 
+                      height="100" 
+                    />
+                    :
                     <img 
                       src={defaultUserImage} 
                       alt="Profile" 
@@ -116,6 +105,7 @@ const HomePage = () => {
                       }}
                     />
                   }
+                  
                   <h2 className="h4">Welcome, {state.user.name}</h2>
                   <p className="text-muted">Email: {state.user.email}</p>
                   
