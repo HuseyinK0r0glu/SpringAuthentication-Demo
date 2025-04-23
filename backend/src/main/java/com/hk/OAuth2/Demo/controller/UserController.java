@@ -122,6 +122,15 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
+        // if the user had a profile picture we need to delete that before deleting the user
+        String profilePicture = user.getLocalPicture();
+        if(profilePicture != null) {
+            File picturePath = new File("uploads/" + profilePicture);
+            if(picturePath.exists()) {
+                picturePath.delete();
+            }
+        }
+
         userService.deleteById(user.getId());
         response.put("result", "User deleted successfully");
         return ResponseEntity.ok(response);
@@ -146,6 +155,15 @@ public class UserController {
         if(!passwordEncoder.matches(providedPassword, user.getPassword())) {
             response.put("error", "Passwords do not match.");
             return ResponseEntity.badRequest().body(response);
+        }
+
+        // if the user had a profile picture we need to delete that before deleting the user
+        String profilePicture = user.getLocalPicture();
+        if(profilePicture != null) {
+            File picturePath = new File("uploads/" + profilePicture);
+            if(picturePath.exists()) {
+                picturePath.delete();
+            }
         }
 
         userService.deleteById(user.getId());
