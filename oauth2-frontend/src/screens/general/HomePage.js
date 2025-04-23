@@ -5,6 +5,7 @@ import defaultUserImage from "../../assets/defaultUserImage.jpeg"
 import { authFetch } from "../../components/ApiClient";
 import { useNavigate } from "react-router-dom";
 import useAuthSync from "../../hooks/useAuthSync";
+import { useProfileImage } from "../../hooks/useProfileImage";
 
 const HomePage = () => {
   
@@ -13,40 +14,9 @@ const HomePage = () => {
     const {state,setUser,logout} = useContext(UserContext);
     const[isAuthenticated,setIsAuthenticated] = useState(false);
 
-    const[imageUrl,setImageUrl] = useState(null); 
-
     useAuthSync({user : state.user, setUser, setIsAuthenticated});
 
-    // for checking the profile picture
-    useEffect(() => {
-
-      const checkImage = async () => {
-
-        try{
-          
-          const response = await fetch(`http://localhost:8080/${state.user.local_picture}`,{ 
-            method : "HEAD",
-          });
-
-          if(response.ok){
-            setImageUrl(`http://localhost:8080/${state.user.local_picture}`);
-          }else {
-            setImageUrl(defaultUserImage);
-          }
-
-        }catch(error){
-          setImageUrl(defaultUserImage);
-        }
-
-      }
-
-      if(state.user?.local_picture){
-        checkImage();
-      }else {
-        setImageUrl(defaultUserImage);
-      }
-
-    }, [state.user?.local_picture]);
+    const imageUrl = useProfileImage({user : state.user});
 
     useEffect(() => {
 

@@ -2,6 +2,7 @@ import React , {useContext, useEffect, useState} from "react";
 import {Context as UserContext} from "../../context/UserContext";
 import defaultUserImage from "../../assets/defaultUserImage.jpeg"
 import { useNavigate } from "react-router-dom";
+import { useProfileImage } from "../../hooks/useProfileImage";
 
 const SettingsPage = () => {
 
@@ -11,38 +12,7 @@ const SettingsPage = () => {
 
     const[isAuthenticated,setIsAuthenticated] = useState(false);
 
-    const[imageUrl,setImageUrl] = useState(null); 
-
-    // for checking the profile picture
-    useEffect(() => {
-
-      const checkImage = async () => {
-
-        try{
-          
-          const response = await fetch(`http://localhost:8080/${state.user.local_picture}`,{ 
-            method : "HEAD",
-          });
-
-          if(response.ok){
-            setImageUrl(`http://localhost:8080/${state.user.local_picture}`);
-          }else {
-            setImageUrl(defaultUserImage);
-          }
-
-        }catch(error){
-          setImageUrl(defaultUserImage);
-        }
-
-      }
-
-      if(state.user?.local_picture){
-        checkImage();
-      }else {
-        setImageUrl(defaultUserImage);
-      }
-
-    }, [state.user?.local_picture]);
+    const imageUrl = useProfileImage({user : state.user});
 
     useEffect(() => {
       const userFromStorage = localStorage.getItem("user");
