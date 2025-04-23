@@ -85,12 +85,28 @@ const HomePage = () => {
                       height="100" 
                     />
                     :
+                    state.user.local_picture 
+                    ?
+                    <img 
+                      src={`http://localhost:8080/${state.user.local_picture}`} 
+                      alt="Profile" 
+                      className="rounded-circle border mb-3"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    : 
                     <img 
                       src={defaultUserImage} 
                       alt="Profile" 
                       className="rounded-circle border mb-3"
-                      width="100" 
-                      height="100" 
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                      }}
                     />
                   }
                   <h2 className="h4">Welcome, {state.user.name}</h2>

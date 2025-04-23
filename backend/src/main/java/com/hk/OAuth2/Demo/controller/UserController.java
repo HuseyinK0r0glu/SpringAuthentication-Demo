@@ -192,7 +192,7 @@ public class UserController {
         Path path = Paths.get(directory, filename).toAbsolutePath().normalize();
         Files.copy(image.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
 
-        user.setLocalPicture(directory + "/" + filename);
+        user.setLocalPicture("profile_pictures" + "/" + filename);
         userService.save(user);
 
         response.put("result", "Profile picture uploaded successfully");
