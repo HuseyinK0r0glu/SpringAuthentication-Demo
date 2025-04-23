@@ -427,6 +427,9 @@ public class AuthController {
         response.put("picture" , picture);
         response.put("token" , tokenJwt);
         response.put("roles" , user.getRoles());
+        if(user.getLocalPicture() != null){
+            response.put("local_picture",user.getLocalPicture());
+        }
 
         return ResponseEntity.ok(response);
     }
