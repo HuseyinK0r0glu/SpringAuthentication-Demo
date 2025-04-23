@@ -5,7 +5,7 @@ import { authFetch } from "../../components/ApiClient";
 
 const UploadProfilePicture = () => {
 
-    const {logout} = useContext(UserContext);
+    const {setUser,logout} = useContext(UserContext);
 
     const navigate = useNavigate();
     const [file,setFile] = useState(null);
@@ -36,6 +36,12 @@ const UploadProfilePicture = () => {
                 navigate("/login?message=session-expired");
                 return;
               }
+
+            const userFromStorage = JSON.parse(localStorage.getItem("user"));
+
+            const updatedUser = {...userFromStorage , local_picture : data.local_picture};
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+            setUser(updatedUser);
 
             setError("");
             setMessage("Profile picture added successfully");

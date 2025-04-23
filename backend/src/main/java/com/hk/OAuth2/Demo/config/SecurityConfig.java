@@ -36,7 +36,8 @@ public class SecurityConfig {
                                     "/api/auth/verify",
                                     "/error",
                                     "/actuator/health",
-                                    "/actuator/metrics" ).permitAll();
+                                    "/actuator/metrics" ,
+                                    "/profile_pictures/**").permitAll();
                             // Preflight CORS check
                             // when we send a request from the frontend the browser sends a preflight request using HTTP OPTIONS method.
                             // This request asks the server for permission to proceed.

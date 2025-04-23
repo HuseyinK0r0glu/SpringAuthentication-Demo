@@ -12,6 +12,39 @@ const HomePage = () => {
     const {state,setUser,logout} = useContext(UserContext);
     const[isAuthenticated,setIsAuthenticated] = useState(false);
 
+    const[imageUrl,setImageUrl] = useState(null); 
+
+    // for checking the profile picture
+    useEffect(() => {
+
+      const checkImage = async () => {
+
+        try{
+          
+          const response = await fetch(`http://localhost:8080/${state.user.local_picture}`,{ 
+            method : "HEAD",
+          });
+
+          if(response.ok){
+            setImageUrl(`http://localhost:8080/${state.user.local_picture}`);
+          }else {
+            setImageUrl(defaultUserImage);
+          }
+
+        }catch(error){
+          setImageUrl(defaultUserImage);
+        }
+
+      }
+
+      if(state.user?.local_picture){
+        checkImage();
+      }else {
+        setImageUrl(defaultUserImage);
+      }
+
+    }, [state.user?.local_picture]);
+
     useEffect(() => {
 
       const checkToken = async () => {
@@ -88,7 +121,7 @@ const HomePage = () => {
                     state.user.local_picture 
                     ?
                     <img 
-                      src={`http://localhost:8080/${state.user.local_picture}`} 
+                      src={imageUrl} 
                       alt="Profile" 
                       className="rounded-circle border mb-3"
                       style={{

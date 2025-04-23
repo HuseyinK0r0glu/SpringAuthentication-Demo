@@ -182,7 +182,7 @@ public class UserController {
         // if user have a profile picture we need to delete that before adding new one
         String oldProfilePicturePath = user.getLocalPicture();
         if(oldProfilePicturePath != null) {
-            File oldImage = new File(oldProfilePicturePath);
+            File oldImage = new File("uploads/" + oldProfilePicturePath);
             if(oldImage.exists()) {
                 oldImage.delete();
             }
@@ -196,6 +196,7 @@ public class UserController {
         userService.save(user);
 
         response.put("result", "Profile picture uploaded successfully");
+        response.put("local_picture",user.getLocalPicture());
         return ResponseEntity.ok().body(response);
     }
 
