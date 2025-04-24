@@ -218,4 +218,39 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
+    @DeleteMapping("/delete-profile-picture")
+    public ResponseEntity<?> deleteProfilePicture() {
+
+        Map<String,String> response = new HashMap<>();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailAddress = (String) authentication.getPrincipal();
+        User user = userService.findByEmail(emailAddress);
+
+        if(user == null) {
+            response.put("error", "User not found.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        String profilePicture = user.getLocalPicture();
+
+        if(profilePicture == null) {
+            response.put("error", "Profile picture is empty.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        // delete the picture from local system
+        File profilePicturePath = new File("uploads/" + profilePicture);
+        if(profilePicturePath.exists()) {
+            profilePicturePath.delete();
+        }
+
+        // delete the picture from database
+        user.setLocalPicture(null);
+        userService.save(user);
+
+        response.put("result", "Profile picture deleted successfully");
+        return ResponseEntity.ok().body(response);
+    }
+
 }
