@@ -4,6 +4,7 @@ import defaultUserImage from "../../assets/defaultUserImage.jpeg"
 import { useNavigate } from "react-router-dom";
 import { useProfileImage } from "../../hooks/useProfileImage";
 import useAuthSync from "../../hooks/useAuthSync";
+import { authFetch } from "../../components/ApiClient";
 
 const SettingsPage = () => {
 
@@ -17,6 +18,19 @@ const SettingsPage = () => {
 
     useAuthSync({user : state.user , setUser , setIsAuthenticated});
 
+    const[hasImage,setHasImage] = useState(false);
+
+    useEffect(() => {
+      if(state.user === null){
+        return;
+      }
+
+      if(state.user.local_picture !== null){
+        setHasImage(true);
+      }
+
+    } , [state.user]);
+
     const handleLogOut = () => {
         setIsAuthenticated(false); 
         localStorage.removeItem("user");
@@ -25,6 +39,32 @@ const SettingsPage = () => {
         localStorage.clear();
         logout();
         navigate("/home");
+    };
+
+    const handleDeletePicture = async () => {
+      if (!window.confirm("Are you sure you want to delete your profile picture?")) return;
+      try{
+
+        const data = await authFetch("http://localhost:8080/api/users/delete-profile-picture",{
+          method : 'DELETE',
+        },true);
+
+        if(data.invalidToken){
+          logout();
+          navigate("/login?message=session-expired");
+          return;
+        }
+
+        const updatedUser = {...state.user,local_picture : null};
+        setUser(updatedUser);
+        localStorage.setItem("user",JSON.stringify(updatedUser));
+        alert("Your profile picture is removed");
+        setHasImage(false);
+
+      }catch(error){
+        alert(error?.message || "Something went wrong while deleting the picture.");
+      }
+
     };
 
     return(
@@ -94,6 +134,15 @@ const SettingsPage = () => {
                     >
                       <i className="fas fa-image me-2"></i> Change Profile Picture
                   </button>
+
+                  {hasImage 
+                    ?
+                    <button className="btn btn-outline-warning btn-lg w-100 mt-3" onClick = {handleDeletePicture}>
+                      <i className="fas fa-code me-2"></i> Delete Picture
+                    </button>
+                    :
+                    null 
+                  }
 
                   <button 
                     className="btn btn-danger btn-lg w-100 mt-3"
