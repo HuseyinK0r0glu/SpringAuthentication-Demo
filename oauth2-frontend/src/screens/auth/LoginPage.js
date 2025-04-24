@@ -15,7 +15,7 @@ function LoginPage() {
   const navigate = useNavigate();
 
   // for traditional login form 
-  const [email,setEmail] = useState('');
+  const [identifier,setIdentifier] = useState('');
   const [password,setPassword] = useState('');
   const [error,setError] = useState(null);
 
@@ -35,7 +35,7 @@ function LoginPage() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email,
+          identifier,
           password,
           rememberMe
         }),
@@ -76,14 +76,14 @@ return (
       {/* Traditional Login Form */}
       <form onSubmit={handleTraditionalLogin}>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email</label>
+          <label htmlFor="identifier" className="form-label">Username or Email</label>
           <input
-            type="email"
-            id="email"
+            type="text"
+            id="identifier"
             className="form-control"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your username or email"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
             required
           />
         </div>

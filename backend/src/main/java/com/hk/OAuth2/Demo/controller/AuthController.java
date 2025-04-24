@@ -252,11 +252,15 @@ public class AuthController {
 
         // loginRequest contains email and password
 
-        User user = userService.findByEmail(loginRequest.getEmail());
+        User user = userService.findByEmail(loginRequest.getIdentifier());
 
         try{
 
             Map<String,Object> response = new HashMap<>();
+
+            if(user == null){
+                user = userService.findByUsername(loginRequest.getIdentifier());
+            }
 
             if(user == null) {
                 response.put("error", "User not found");
@@ -265,6 +269,11 @@ public class AuthController {
 
             if (user.getVerified() == 0) {
                 response.put("error", "Email is not verified. Please verify your email before logging in.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+
+            if(user.getProvider() != null){
+                response.put("error", "Please log in using " + user.getProvider());
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
@@ -322,13 +331,8 @@ public class AuthController {
                 }
             }
 
-            if(user.getProvider() != null){
-                response.put("error", "Please log in using " + user.getProvider());
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            }
-
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), loginRequest.getPassword())
             );
 
             user.setFailedAttempts(0);
