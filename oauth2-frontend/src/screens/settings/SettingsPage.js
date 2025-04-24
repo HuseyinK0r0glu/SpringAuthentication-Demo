@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useProfileImage } from "../../hooks/useProfileImage";
 import useAuthSync from "../../hooks/useAuthSync";
 import { authFetch } from "../../components/ApiClient";
+import Swal from "sweetalert2"; // for better alerts and confirms 
 
 const SettingsPage = () => {
 
@@ -42,7 +43,20 @@ const SettingsPage = () => {
     };
 
     const handleDeletePicture = async () => {
-      if (!window.confirm("Are you sure you want to delete your profile picture?")) return;
+
+      const result = await Swal.fire({
+        title : 'Are you sure?',
+        text : 'Do you really want to delete your profile picture?',
+        icon : 'warning',
+        showCancelButton : true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+      });
+
+      if(!result.isConfirmed) return;
+
       try{
 
         const data = await authFetch("http://localhost:8080/api/users/delete-profile-picture",{
@@ -58,8 +72,14 @@ const SettingsPage = () => {
         const updatedUser = {...state.user,local_picture : null};
         setUser(updatedUser);
         localStorage.setItem("user",JSON.stringify(updatedUser));
-        alert("Your profile picture is removed");
         setHasImage(false);
+
+        await Swal.fire({
+          title: 'Deleted!',
+          text: 'Your profile picture has been removed.',
+          icon: 'success',
+          confirmButtonColor: '#3085d6'
+        });
 
       }catch(error){
         alert(error?.message || "Something went wrong while deleting the picture.");

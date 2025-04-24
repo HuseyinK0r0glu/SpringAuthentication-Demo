@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import PasswordValidation from "../../components/PasswordValidation";
 import { authFetch } from "../../components/ApiClient";
 import PhoneInput from "react-phone-input-2";
+import Swal from "sweetalert2";
 
 const SignUpPage = () => {
 
@@ -85,7 +86,12 @@ const SignUpPage = () => {
             localStorage.setItem("cooldownEnd", expiresAt);
               
             setError("");
-            alert(data.message || "Verification link is send! Please check your email!");
+            Swal.fire({
+              title: 'Email Sent!',
+              text: data.message || 'Verification link is sent! Please check your email!',
+              icon: 'info',
+              confirmButtonColor: '#3085d6'
+            });
             navigate("/verify");
             
         }catch(error){

@@ -3,6 +3,7 @@ import { Context as UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../components/ApiClient";
 import useAuthSync from "../../hooks/useAuthSync";
+import Swal from "sweetalert2";
 
 const DeleteAccountPage = () => {
 
@@ -16,9 +17,18 @@ const DeleteAccountPage = () => {
     const navigate = useNavigate();
 
     const handleDelete = async () => {
-        if(!window.confirm("Are you sure you want to delete your account? This action is irreversible!")){
-            return;
-        }
+        const result = await Swal.fire({
+          title: 'Are you sure?',
+          text: 'Do you really want to delete your account? This action is irreversible!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'Cancel'
+        });
+
+        if (!result.isConfirmed) return;
 
         const requestBody = user.provider ? {} : {password};
 
@@ -49,13 +59,23 @@ const DeleteAccountPage = () => {
               return;
             }
 
-            alert("Your account has been deleted.");
+            Swal.fire({
+              title: 'Account Deleted',
+              text: 'Your account has been deleted.',
+              icon: 'success',
+              confirmButtonColor: '#d33'
+            });
             localStorage.clear();
             logout(); 
             navigate("/home"); 
 
         }catch(error){
-            alert(error.message);
+            Swal.fire({
+              title: 'Oops!',
+              text: error?.message || 'Something went wrong.',
+              icon: 'error',
+              confirmButtonColor: '#d33'
+            });
             console.error("Error deleting account:", error);
         }
     }
