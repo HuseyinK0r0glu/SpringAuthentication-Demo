@@ -11,8 +11,19 @@ export const useProfileImage = ({user}) => {
 
         try{
           
+          const token = localStorage.getItem("token");
+
+          if (!token) {
+            console.error("No token found, using default image");
+            setImageUrl(defaultUserImage);
+            return;
+          }
+
           const response = await fetch(`http://localhost:8080/${user.local_picture}`,{ 
             method : "HEAD",
+            headers : {
+              Authorization : `Bearer ${token}`
+            },
           });
 
           if(response.ok){
@@ -22,6 +33,7 @@ export const useProfileImage = ({user}) => {
           }
 
         }catch(error){
+          console.log(error);
           setImageUrl(defaultUserImage);
         }
 

@@ -3,15 +3,76 @@ import { Context as UserContext } from "../../context/UserContext";
 import { authFetch } from "../../components/ApiClient";
 import { useNavigate } from "react-router-dom";
 import defaultUserImage from "../../assets/defaultUserImage.jpeg"
+import { useProfileImage } from "../../hooks/useProfileImage";
 
-const AdminPage = () => {
+const UserCard = ({user}) => {
 
     const navigate = useNavigate();
+
+    const imageUrl = useProfileImage({user : user});
+
+    return(
+        <div key={user.id} className="user-card">   
+            <div className="card shadow-lg">
+                <div className="card-body d-flex flex-column align-items-center">
+
+                    {user.local_picture
+                    ? 
+                    <img 
+                        src={imageUrl} 
+                        alt="Profile" 
+                        className="rounded-circle border mb-3"
+                        style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                        }}
+                    />
+                    :
+                    user.picture 
+                    ?
+                    <img 
+                        src={user.picture} 
+                        alt="Profile" 
+                        className="rounded-circle border mb-3"
+                        width="100" 
+                        height="100" 
+                    />
+                    :
+                    <img 
+                        src={defaultUserImage} 
+                        alt="Profile" 
+                        className="rounded-circle border mb-3"
+                        style={{
+                        width: "100px",
+                        height: "100px",
+                        objectFit: "cover",
+                        }}
+                    />
+                    }
+
+                    <h2 className="h5 mb-1">{user.username}</h2>
+                    <p className="text-muted mb-3">{user.email}</p>
+
+                    <button className="btn btn-primary btn-sm" 
+                        onClick={() => navigate(`/user-profile?id=${user.id}`)}
+                    >
+                        View Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const AdminPage = () => {
 
     const {logout} = useContext(UserContext);
 
     const [users,setUsers] = useState([]);
     const [error,setError] = useState("");
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         
@@ -47,37 +108,7 @@ const AdminPage = () => {
 
             <div className="user-list">
                 {users.map((user) => (
-                    <div key={user.id} className="user-card">
-                        <div className="card shadow-lg">
-                            <div className="card-body d-flex flex-column align-items-center">
-                                {user.picture ? (
-                                    <img
-                                        src={user.picture}
-                                        alt="Profile"
-                                        className="rounded-circle mb-3"
-                                        width="120"
-                                        height="120"
-                                    />
-                                ) : (
-                                    <img
-                                        src={defaultUserImage}
-                                        alt="Profile"
-                                        className="rounded-circle mb-3"
-                                        width="120"
-                                        height="120"
-                                    />
-                                )}
-                                <h2 className="h5 mb-1">{user.username}</h2>
-                                <p className="text-muted mb-3">{user.email}</p>
-
-                                <button className="btn btn-primary btn-sm" 
-                                    onClick={() => navigate(`/user-profile?id=${user.id}`)}
-                                >
-                                    View Profile
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <UserCard key={user.id} user={user} />
                 ))}
             </div>
 
