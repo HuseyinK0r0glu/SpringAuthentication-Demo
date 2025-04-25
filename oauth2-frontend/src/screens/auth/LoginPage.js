@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState , useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context as UserContext } from "../../context/UserContext";
 import { authFetch } from "../../components/ApiClient";
@@ -23,6 +23,11 @@ function LoginPage() {
   const handleLogin = (provider) => {   
     window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
   };
+
+  // autofocus
+  useEffect(() => {
+    document.getElementById("identifier")?.focus();
+  }, []);
 
   const handleTraditionalLogin = async (e) => {
     e.preventDefault();

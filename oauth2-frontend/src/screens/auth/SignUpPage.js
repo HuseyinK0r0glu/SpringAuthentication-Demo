@@ -1,4 +1,4 @@
-import React , {useState} from "react";
+import React , {useState , useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import PasswordValidation from "../../components/PasswordValidation";
 import { authFetch } from "../../components/ApiClient";
@@ -45,6 +45,11 @@ const SignUpPage = () => {
       setPhone(newPhone);
       setIsValidPhone(phoneRegex.test(newPhone));
     };
+
+    // autofocus
+    useEffect(() => {
+      document.getElementById("username")?.focus();
+    }, []);
 
     const handleSignUp = async (e) => {
         e.preventDefault();
