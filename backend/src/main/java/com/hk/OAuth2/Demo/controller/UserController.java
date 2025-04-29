@@ -255,6 +255,10 @@ public class UserController {
     @GetMapping("/search")
     public ResponseEntity<?> searchUsers(@RequestParam String name) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailAddress = (String) authentication.getPrincipal();
+        User currentUser = userService.findByEmail(emailAddress);
+
         List<User> listOfUsers = userService.searchUsersByUsername(name);
 
         if (listOfUsers.isEmpty()) {
@@ -266,6 +270,11 @@ public class UserController {
         List<UserDto> userDtos = new ArrayList<>();
 
         for (User user : listOfUsers) {
+
+            if(user == currentUser){
+                continue;
+            }
+
             UserDto userDto = new UserDto(user.getId(),user.getUsername(),user.getEmail(),
                     user.getProvider(),user.getOauth2Id(),user.getPicture(),user.getLocalPicture(),
                     user.getRoles());
