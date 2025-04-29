@@ -31,6 +31,7 @@ const SignUpPage = () => {
         uppercase : false,
         lowercase : false,
         number : false,
+        
         specialChar : false,
         noWhiteSpace : false
       });

@@ -2,6 +2,7 @@ package com.hk.OAuth2.Demo.controller;
 
 import com.hk.OAuth2.Demo.dto.UpdatePasswordRequest;
 import com.hk.OAuth2.Demo.dto.UpdateUserNameRequest;
+import com.hk.OAuth2.Demo.dto.UserDto;
 import com.hk.OAuth2.Demo.entity.User;
 import com.hk.OAuth2.Demo.service.PasswordValidationService;
 import com.hk.OAuth2.Demo.service.UserService;
@@ -19,9 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -251,6 +250,29 @@ public class UserController {
 
         response.put("result", "Profile picture deleted successfully");
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchUsers(@RequestParam String name) {
+
+        List<User> listOfUsers = userService.searchUsersByUsername(name);
+
+        if (listOfUsers.isEmpty()) {
+            Map<String,String> response = new HashMap<>();
+            response.put("error", "No user with this name exists.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        List<UserDto> userDtos = new ArrayList<>();
+
+        for (User user : listOfUsers) {
+            UserDto userDto = new UserDto(user.getId(),user.getUsername(),user.getEmail(),
+                    user.getProvider(),user.getOauth2Id(),user.getPicture(),user.getLocalPicture(),
+                    user.getRoles());
+            userDtos.add(userDto);
+        }
+
+        return ResponseEntity.ok().body(userDtos);
     }
 
 }

@@ -53,6 +53,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public List<User> searchUsersByUsername(String username){
+        return userRepository.findByUsernameContainingIgnoreCase(username);
+    }
+
     // for oauth2 logins
     public User createUser(String userName , String email , String provider , String oauth2Id , String picture) {
 
