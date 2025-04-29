@@ -16,8 +16,13 @@ public class Friendships {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long senderId;
-    private Long receiverId;
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private User receiver;
 
     // "PENDING" or "ACCEPTED"
     private String status;
@@ -27,9 +32,9 @@ public class Friendships {
     public Friendships() {
     }
 
-    public Friendships(Long senderId, Long receiverId, String status, LocalDateTime createdAt) {
-        this.senderId = senderId;
-        this.receiverId = receiverId;
+    public Friendships(User sender, User receiver, String status, LocalDateTime createdAt) {
+        this.sender = sender;
+        this.receiver = receiver;
         this.status = status;
         this.createdAt = createdAt;
     }

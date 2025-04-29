@@ -47,7 +47,7 @@ public class FriendshipsController {
 
     @GetMapping("/pending")
     public ResponseEntity<List<Friendships>> getPendingFriendsList(@RequestParam Long userId) {
-        List<Friendships> pendingList = friendshipsService.getPendingRquests(userId);
+        List<Friendships> pendingList = friendshipsService.getPendingRequests(userId);
         return ResponseEntity.ok(pendingList);
     }
 
