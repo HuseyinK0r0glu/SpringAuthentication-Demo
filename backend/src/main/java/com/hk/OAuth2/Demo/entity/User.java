@@ -76,6 +76,12 @@ public class User {
     @Column(name = "verification_code_sent_at")
     private LocalDateTime verificationCodeSentAt;
 
+    @OneToMany(mappedBy = "sender")
+    private List<Friendships> sendRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiver")
+    private List<Friendships> receiveRequests = new ArrayList<>();
+
     public User() {
     }
 
@@ -105,6 +111,32 @@ public class User {
         this.failedAttempts = failedAttempts;
         this.phoneNumber = phoneNumber;
         this.phoneVerified = phoneVerified;
+    }
+
+    public User(String username,
+                String email,
+                String password,
+                int verified,
+                String verificationToken,
+                LocalDateTime expiryTime,
+                List<String> roles,
+                int failedAttempts,
+                String phoneNumber,
+                boolean phoneVerified,
+                List<Friendships> sendRequests,
+                List<Friendships> receiveRequests) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.verified = verified;
+        this.verificationToken = verificationToken;
+        this.expiryTime = expiryTime;
+        this.roles = roles;
+        this.failedAttempts = failedAttempts;
+        this.phoneNumber = phoneNumber;
+        this.phoneVerified = phoneVerified;
+        this.sendRequests = sendRequests;
+        this.receiveRequests = receiveRequests;
     }
 
     // for oauth2 login
