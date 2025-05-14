@@ -4,11 +4,43 @@ import { authFetch } from "../../components/ApiClient";
 import { Context as UserContext } from "../../context/UserContext";
 import defaultUserImage from "../../assets/defaultUserImage.jpeg";
 import { useProfileImage } from "../../hooks/useProfileImage";
+import useAuthSync from "../../hooks/useAuthSync";
 import { Link } from "react-router-dom";
 
 const UserCard = ({user}) => {
 
     const navigate = useNavigate();
+
+    const {state,setUser,logout} = useContext(UserContext);
+    const[isAuthenticated,setIsAuthenticated] = useState(false);
+
+    useAuthSync({user : state.user, setUser, setIsAuthenticated});
+
+    // backend does not return a valid JSON ????
+    const sendFriendRequest = async (id) => {
+
+        try{
+    
+            const data = await authFetch(`http://localhost:8080/api/friends/request?senderId=${user.id}&receiverId=${id}`,{
+                method : 'POST',
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+            },true);
+    
+            if(data.invalidToken){
+                logout();
+                navigate("/login?message=session-expired");
+                return;
+            }
+
+            console.log(data);
+    
+        }catch(error){
+            console.log(error.message || "something went wrong");
+        }
+    
+    };
 
     const imageUrl = useProfileImage({user : user});
 
@@ -53,11 +85,29 @@ const UserCard = ({user}) => {
                         />
                     )}
 
-                    {/* User Info (Username) */}
-                    <div className="ms-3">
-                        <h2 className="h6 mb-1">{user.username}</h2>
-                    </div>
+                    {/* Username and Button Row */}
+                    <div className="ms-3 d-flex justify-content-between align-items-center flex-grow-1">
+                        <h2 className="h6 mb-0">{user.username}</h2>
 
+                        <button
+                            className="btn btn-sm"
+                            style={{
+                                backgroundColor: "#4A90E2",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "20px",
+                                padding: "5px 12px",
+                                fontSize: "14px",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px"
+                            }}
+                            onClick={() => sendFriendRequest(user.id)}
+                            title="Send Friend Request"
+                        >
+                            <i className="fas fa-user-plus"></i> Add
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,39 +158,86 @@ const FriendsPage = () => {
 
     };
 
+    const [messageForGemini,setMessageForGemini] = useState("");
+    const [geminiResponse,setGeminiResponse] = useState("");
+    const [loading,setLoading] = useState(false);
+
+    const handleGeminiSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!messageForGemini.trim()) return;
+
+        setLoading(true);
+        setGeminiResponse("");
+
+        try{
+            const data = await authFetch('http://localhost:8080/api/ai/ask',{
+                method : 'POST',
+                headers : {
+                    'Content-Type' : 'application/json',
+                },
+                body : JSON.stringify({message : messageForGemini}),
+            },true);
+    
+            setGeminiResponse(data.response);
+        }catch(error){
+            console.log("Error while talking to Gemini");
+            setGeminiResponse("Something went wrong!");                
+        }finally{
+            setLoading(false);
+        }
+
+    };
 
     return (
-        <div className="d-flex">
-            <div className="container mt-3" style={{ maxWidth: '300px'}}>
+        <div className="d-flex" style={{ height: '100vh' }}>
+            <div
+                className="border-end p-3"
+                style={{
+                width: '320px',
+                minWidth: '320px',
+                backgroundColor: '#f8f9fa',
+                overflowY: 'auto'
+                }}
+            >
+                {/* Friend Search Section */}
+                <div className="mb-2">
                 <input
                     type="text"
-                    className="form-control mb-3"
+                    className="form-control mb-2"
                     placeholder="Search Friend"
                     value={query}
                     onChange={handleChange}
                 />
-                
-                {query ? (
-                    <ul className="list-group">
-                        {results?.map(user => (
-                            <Link
-                                to = "" // fill this part 
-                                key={user.id}
-                                className="text-decoration-none"
-                            >
-                                <UserCard key={user.id} user={user} />
-                            </Link>
-                        ))}
-                    </ul>
-                ) : (
-                    <div className="text-muted">Add friends here</div>
+
+                <ul className="list-group">
+                    {results?.map(user => (
+                        <UserCard key={user.id} user={user} />
+                    ))}
+                </ul>
+
+                </div>
+
+                {/* Gemini Message Input */}
+                <form onSubmit={handleGeminiSubmit} className="mb-3">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Send Message To Gemini"
+                    value={messageForGemini}
+                    onChange={(e) => setMessageForGemini(e.target.value)}
+                />
+                </form>
+
+                {/* Gemini Response Block */}
+                {loading ? (
+                    <div className="alert alert-warning">Please wait, Gemini is thinking...</div>
+                    ) : geminiResponse && (
+                    <div className="alert alert-info" style={{ whiteSpace: 'pre-wrap' }}>
+                        {geminiResponse}
+                    </div>
                 )}
             </div>
-
-            <div className="flex-grow-1 p-3">
-                {/* You can put more stuff here later */}
-            </div>
-
         </div>
       );
 };
