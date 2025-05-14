@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Configuration
-public class OpenAIConfig {
+public class GeminiConfig {
 
-    @Value("${openai.api.key}")
+    @Value("${gemini.api.key}")
     private String apiKey;
 
 }
