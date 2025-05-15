@@ -76,10 +76,10 @@ public class User {
     @Column(name = "verification_code_sent_at")
     private LocalDateTime verificationCodeSentAt;
 
-    @OneToMany(mappedBy = "sender")
+    @OneToMany(mappedBy = "sender" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Friendships> sendRequests = new ArrayList<>();
 
-    @OneToMany(mappedBy = "receiver")
+    @OneToMany(mappedBy = "receiver" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Friendships> receiveRequests = new ArrayList<>();
 
     public User() {
