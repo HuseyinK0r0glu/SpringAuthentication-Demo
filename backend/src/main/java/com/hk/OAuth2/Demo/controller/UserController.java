@@ -122,13 +122,7 @@ public class UserController {
         }
 
         // if the user had a profile picture we need to delete that before deleting the user
-        String profilePicture = user.getLocalPicture();
-        if(profilePicture != null) {
-            File picturePath = new File("uploads/" + profilePicture);
-            if(picturePath.exists()) {
-                picturePath.delete();
-            }
-        }
+        deleteLocalProfileImage(user);
 
         userService.deleteById(user.getId());
         response.put("result", "User deleted successfully");
@@ -157,13 +151,7 @@ public class UserController {
         }
 
         // if the user had a profile picture we need to delete that before deleting the user
-        String profilePicture = user.getLocalPicture();
-        if(profilePicture != null) {
-            File picturePath = new File("uploads/" + profilePicture);
-            if(picturePath.exists()) {
-                picturePath.delete();
-            }
-        }
+        deleteLocalProfileImage(user);
 
         userService.deleteById(user.getId());
         response.put("result", "User deleted successfully");
@@ -197,13 +185,7 @@ public class UserController {
         }
 
         // if user have a profile picture we need to delete that before adding new one
-        String oldProfilePicturePath = user.getLocalPicture();
-        if(oldProfilePicturePath != null) {
-            File oldImage = new File("uploads/" + oldProfilePicturePath);
-            if(oldImage.exists()) {
-                oldImage.delete();
-            }
-        }
+        deleteLocalProfileImage(user);
 
         String filename = UUID.randomUUID() + "_" + image.getOriginalFilename();
         Path path = Paths.get(directory, filename).toAbsolutePath().normalize();
@@ -239,10 +221,7 @@ public class UserController {
         }
 
         // delete the picture from local system
-        File profilePicturePath = new File("uploads/" + profilePicture);
-        if(profilePicturePath.exists()) {
-            profilePicturePath.delete();
-        }
+        deleteLocalProfileImage(user);
 
         // delete the picture from database
         user.setLocalPicture(null);
@@ -287,6 +266,16 @@ public class UserController {
         }
 
         return ResponseEntity.ok().body(userDtos);
+    }
+
+    public void deleteLocalProfileImage(User user){
+        String profilePicture = user.getLocalPicture();
+        if(profilePicture != null) {
+            File picturePath = new File("uploads/" + profilePicture);
+            if(picturePath.exists()) {
+                picturePath.delete();
+            }
+        }
     }
 
 }
