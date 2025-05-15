@@ -178,6 +178,12 @@ const FriendsPage = () => {
                 },
                 body : JSON.stringify({message : messageForGemini}),
             },true);
+
+            if(data.invalidToken){
+                logout();
+                navigate("/login?message=session-expired");
+                return;
+            }
     
             setGeminiResponse(data.response);
         }catch(error){
