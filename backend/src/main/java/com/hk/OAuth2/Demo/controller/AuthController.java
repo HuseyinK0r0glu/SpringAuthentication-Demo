@@ -292,9 +292,7 @@ public class AuthController {
                     // if passed we can continue to log in
                     // if not we will return minutes left
 
-                    // change this to 10 minutes
-                    // for test purposes we set 1
-                    LocalDateTime unlockTime = lockTimeOfUser.plusMinutes(1);
+                    LocalDateTime unlockTime = lockTimeOfUser.plusMinutes(10);
                     if(LocalDateTime.now().isBefore(unlockTime)) {
                         Duration duration = Duration.between(LocalDateTime.now(), unlockTime);
                         long total = duration.getSeconds();
