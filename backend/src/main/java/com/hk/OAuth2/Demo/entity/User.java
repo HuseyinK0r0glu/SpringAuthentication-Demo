@@ -88,6 +88,9 @@ public class User {
     @Column(name = "is_profile_picture_visible", nullable = false)
     private boolean isProfilePictureVisible = true;
 
+    @Column(name = "is_banned" , nullable = false)
+    private boolean isBanned = false;
+
     public User() {
     }
 

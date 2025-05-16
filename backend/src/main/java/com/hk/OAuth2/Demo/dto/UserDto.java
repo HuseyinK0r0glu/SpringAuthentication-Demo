@@ -18,6 +18,7 @@ public class UserDto {
     private String local_picture;
     private List<String> roles;
     private boolean isProfilePictureVisible;
+    private boolean isBanned;
 
     public UserDto(Long id,
                    String username,
@@ -27,7 +28,8 @@ public class UserDto {
                    String picture,
                    String local_picture,
                    List<String> roles,
-                   boolean isProfilePictureVisible) {
+                   boolean isProfilePictureVisible,
+                   boolean isBanned) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -37,5 +39,6 @@ public class UserDto {
         this.local_picture = local_picture;
         this.roles = roles;
         this.isProfilePictureVisible = isProfilePictureVisible;
+        this.isBanned = isBanned;
     }
 }

@@ -350,6 +350,7 @@ public class AuthController {
             response.put("phone",user.getPhoneNumber());
             response.put("phone_verified",user.getPhoneVerified());
             response.put("picture_visible",user.isProfilePictureVisible());
+            response.put("is_banned",user.isBanned());
 
             return ResponseEntity.ok(response);
 
@@ -434,6 +435,7 @@ public class AuthController {
             response.put("local_picture",user.getLocalPicture());
         }
         response.put("picture_visible",user.isProfilePictureVisible());
+        response.put("is_banned",user.isBanned());
 
         return ResponseEntity.ok(response);
     }

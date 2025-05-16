@@ -267,7 +267,7 @@ public class UserController {
 
             UserDto userDto = new UserDto(user.getId(),user.getUsername(),user.getEmail(),
                     user.getProvider(),user.getOauth2Id(),user.getPicture(),user.getLocalPicture(),
-                    user.getRoles(),user.isProfilePictureVisible());
+                    user.getRoles(),user.isProfilePictureVisible(), user.isBanned());
             userDtos.add(userDto);
         }
         return userDtos;
