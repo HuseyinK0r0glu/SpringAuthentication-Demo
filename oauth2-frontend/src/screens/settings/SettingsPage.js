@@ -68,7 +68,7 @@ const SettingsPage = () => {
           navigate("/login?message=session-expired");
           return;
         }
-
+        
         const updatedUser = {...state.user,local_picture : null};
         setUser(updatedUser);
         localStorage.setItem("user",JSON.stringify(updatedUser));
@@ -82,8 +82,53 @@ const SettingsPage = () => {
         });
 
       }catch(error){
-        alert(error?.message || "Something went wrong while deleting the picture.");
+        Swal.fire({
+          title: 'Oops!',
+          text: error?.message || "Something went wrong while deleting the picture.",
+          icon: 'error',
+          confirmButtonColor: '#d33'
+        });
+        console.error("Error deleting account:", error);
       }
+
+    };
+
+    const[isVisible,setIsVisible] = useState(state.user?.picture_visible ?? true);
+
+    const handleVisibilityChange = async (newValue) => {
+
+      try{
+        const data = await authFetch("http://localhost:8080/api/users/profile-picture-visibility",{
+          method : 'PATCH',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body : JSON.stringify({isVisible : newValue}),
+        },true);
+
+        if (data.invalidToken) {
+          logout();
+          navigate("/login?message=session-expired");
+          return;
+        }
+
+        console.log(data);
+
+        const updatedUser = {...state.user,picture_visible : newValue};
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        setIsVisible(newValue);
+
+      }catch(error){
+        Swal.fire({
+          title: 'Oops!',
+          text: error?.message || 'Something went wrong.',
+          icon: 'error',
+          confirmButtonColor: '#d33'
+        });
+        console.error("Error deleting account:", error);
+      }
+
 
     };
 
@@ -130,6 +175,19 @@ const SettingsPage = () => {
 
                 <h2 className="h4">{state.user.name}</h2>
                 <p className="text-muted">Email: {state.user.email}</p>
+
+                <div className="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="visibilitySwitch"
+                    checked={isVisible}
+                    onChange={(e) => handleVisibilityChange(e.target.checked)}
+                  />
+                  <label className="form-check-label" htmlFor="visibilitySwitch">
+                    Show my profile picture to others
+                  </label>
+                </div>
 
                 <div className="d-flex flex-column align-items-center">
                   <button

@@ -349,6 +349,7 @@ public class AuthController {
             response.put("failed_attempts",user.getFailedAttempts());
             response.put("phone",user.getPhoneNumber());
             response.put("phone_verified",user.getPhoneVerified());
+            response.put("picture_visible",user.isProfilePictureVisible());
 
             return ResponseEntity.ok(response);
 
@@ -432,6 +433,7 @@ public class AuthController {
         if(user.getLocalPicture() != null){
             response.put("local_picture",user.getLocalPicture());
         }
+        response.put("picture_visible",user.isProfilePictureVisible());
 
         return ResponseEntity.ok(response);
     }

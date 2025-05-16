@@ -48,41 +48,24 @@ const UserCard = ({user}) => {
             <div className="card shadow-sm" style={{ maxWidth: '300px', borderRadius: '10px' }}>
                 <div className="card-body d-flex align-items-center p-2">
 
-                    {/* Profile Picture */}
-                    {user.local_picture ? (
-                        <img
-                            src={imageUrl}
-                            alt="Profile"
-                            className="rounded-circle border"
-                            style={{
-                                width: "40px",
-                                height: "40px",
-                                objectFit: "cover",
-                            }}
-                        />
-                    ) : user.picture ? (
-                        <img
-                            src={user.picture}
-                            alt="Profile"
-                            className="rounded-circle border"
-                            style={{
-                                width: "40px",
-                                height: "40px",
-                                objectFit: "cover",
-                            }}
-                        />
-                    ) : (
-                        <img
-                            src={defaultUserImage}
-                            alt="Profile"
-                            className="rounded-circle border"
-                            style={{
-                                width: "40px",
-                                height: "40px",
-                                objectFit: "cover",
-                            }}
-                        />
-                    )}
+                    <img
+                        src={
+                            user.profilePictureVisible
+                            ? user.local_picture
+                                ? imageUrl
+                                : user.picture
+                                ? user.picture
+                                : defaultUserImage
+                            : defaultUserImage
+                        }
+                        alt="Profile"
+                        className="rounded-circle border"
+                        style={{
+                            width: "40px",
+                            height: "40px",
+                            objectFit: "cover",
+                        }}
+                    />
 
                     {/* Username and Button Row */}
                     <div className="ms-3 d-flex justify-content-between align-items-center flex-grow-1">

@@ -261,11 +261,34 @@ public class UserController {
 
             UserDto userDto = new UserDto(user.getId(),user.getUsername(),user.getEmail(),
                     user.getProvider(),user.getOauth2Id(),user.getPicture(),user.getLocalPicture(),
-                    user.getRoles());
+                    user.getRoles(),user.isProfilePictureVisible());
             userDtos.add(userDto);
         }
 
         return ResponseEntity.ok().body(userDtos);
+    }
+
+    // HTTP method used to partially update a resource on the server
+    // PUT updates entire resource and this updates partially
+    @PatchMapping("/profile-picture-visibility")
+    public ResponseEntity<?> changeProfilePictureVisibility(@RequestBody Map<String,Boolean> request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailAddress = (String) authentication.getPrincipal();
+        User user = userService.findByEmail(emailAddress);
+
+        Map<String,Object> response = new HashMap<>();
+
+        if(user == null) {
+            response.put("error", "User not found.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        boolean isVisible = request.getOrDefault("isVisible", true);
+        user.setProfilePictureVisible(isVisible);
+        userService.save(user);
+
+        response.put("result", "Profile picture visibility updated successfully");
+        return ResponseEntity.ok().body(response);
     }
 
     public void deleteLocalProfileImage(User user){

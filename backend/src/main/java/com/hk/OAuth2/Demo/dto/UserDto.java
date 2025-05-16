@@ -17,6 +17,7 @@ public class UserDto {
     private String picture;
     private String local_picture;
     private List<String> roles;
+    private boolean isProfilePictureVisible;
 
     public UserDto(Long id,
                    String username,
@@ -25,7 +26,8 @@ public class UserDto {
                    String oauth2Id,
                    String picture,
                    String local_picture,
-                   List<String> roles) {
+                   List<String> roles,
+                   boolean isProfilePictureVisible) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -34,5 +36,6 @@ public class UserDto {
         this.picture = picture;
         this.local_picture = local_picture;
         this.roles = roles;
+        this.isProfilePictureVisible = isProfilePictureVisible;
     }
 }

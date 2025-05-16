@@ -85,6 +85,9 @@ public class User {
     @JsonIgnore
     private List<Friendships> receiveRequests = new ArrayList<>();
 
+    @Column(name = "is_profile_picture_visible", nullable = false)
+    private boolean isProfilePictureVisible = true;
+
     public User() {
     }
 

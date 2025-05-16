@@ -67,6 +67,7 @@ public class UserService {
         }
 
         User user = new User(userName,email,provider,oauth2Id,picture,List.of("ROLE_USER"),1);
+        user.setProfilePictureVisible(true);
 
         return userRepository.save(user);
     }
@@ -80,6 +81,7 @@ public class UserService {
         }
 
         User user = new User(userName,email,passwordEncoder.encode(password),0,token,expiryTime, List.of("ROLE_USER"), 0,phoneNumber,false);
+        user.setProfilePictureVisible(true);
         return userRepository.save(user);
     }
 
