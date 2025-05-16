@@ -246,6 +246,12 @@ public class UserController {
             return ResponseEntity.badRequest().body(response);
         }
 
+        List<UserDto> userDtos = getUserDtos(listOfUsers, currentUser);
+
+        return ResponseEntity.ok().body(userDtos);
+    }
+
+    private List<UserDto> getUserDtos(List<User> listOfUsers, User currentUser) {
         List<UserDto> userDtos = new ArrayList<>();
 
         for (User user : listOfUsers) {
@@ -264,8 +270,7 @@ public class UserController {
                     user.getRoles(),user.isProfilePictureVisible());
             userDtos.add(userDto);
         }
-
-        return ResponseEntity.ok().body(userDtos);
+        return userDtos;
     }
 
     // HTTP method used to partially update a resource on the server
