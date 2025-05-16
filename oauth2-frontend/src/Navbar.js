@@ -2,6 +2,8 @@ import { useContext , useEffect, useState} from "react";
 import { NavLink } from "react-router-dom";
 import { Context as UserContext } from "./context/UserContext";
 import useAuthSync from "./hooks/useAuthSync";
+import { useProfileImage } from "./hooks/useProfileImage";
+import defaultUserImage from "./assets/defaultUserImage.jpeg"
 
 export const Navbar = () => {
 
@@ -10,6 +12,8 @@ export const Navbar = () => {
   const {state , setUser} = useContext(UserContext);
 
   useAuthSync({user : state.user , setUser , setIsAuthenticated});
+
+  const imageUrl = useProfileImage({user : state.user});
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark py-3" style={{ backgroundColor: "#2c3e50" }}>
@@ -51,13 +55,52 @@ export const Navbar = () => {
               <>
                 <li className="nav-item dropdown">
                   <button 
-                    className="btn btn-outline-light dropdown-toggle" 
+                    className="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2" 
                     id="userDropdown" 
                     data-bs-toggle="dropdown" 
                     aria-expanded="false"
                   >
-                    {state.user?.name || "User"}
+
+                    {state.user?.local_picture
+                      ? 
+                      <img
+                      src={imageUrl}
+                      alt="Profile"
+                      className="rounded-circle border"
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    :
+                    state.user?.picture 
+                      ?
+                      <img 
+                        src={state.user.picture} 
+                        alt="Profile" 
+                        className="rounded-circle border"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          objectFit: "cover",
+                        }}
+                      />
+                      :
+                      <img 
+                        src={defaultUserImage} 
+                        alt="Profile" 
+                        className="rounded-circle border"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          objectFit: "cover",
+                        }}  
+                      />
+                    }
+                    <span>{state.user?.name || "User"}</span>
                   </button>
+
                   <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li>
                       <NavLink className="dropdown-item" to="/home">Home</NavLink>
