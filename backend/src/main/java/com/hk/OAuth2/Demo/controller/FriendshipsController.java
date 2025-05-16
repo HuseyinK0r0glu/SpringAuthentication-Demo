@@ -19,10 +19,25 @@ public class FriendshipsController {
         this.friendshipsService = friendshipsService;
     }
 
+
+    // return json from endpoints
+
+
     @PostMapping("/request")
-    public ResponseEntity<Friendships> sendFriendRequest(@RequestParam Long senderId,@RequestParam Long receiverId){
+    public ResponseEntity<Map<String,Object>> sendFriendRequest(@RequestParam Long senderId,@RequestParam Long receiverId){
+        Map<String,Object> response = new HashMap<>();
+
+        List<Friendships> pendingRequests = friendshipsService.getPendingRequests(receiverId);
+        for(Friendships f : pendingRequests){
+            if(f.getSender().getId().equals(senderId)){
+                response.put("error","Request already sent");
+                return ResponseEntity.badRequest().body(response);
+            }
+        }
+
         Friendships friendships = friendshipsService.sendFriendRequest(senderId, receiverId);
-        return ResponseEntity.ok(friendships);
+        response.put("message", "Friend request sent successfully");
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/accept")

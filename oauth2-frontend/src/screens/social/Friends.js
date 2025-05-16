@@ -5,7 +5,6 @@ import { Context as UserContext } from "../../context/UserContext";
 import defaultUserImage from "../../assets/defaultUserImage.jpeg";
 import { useProfileImage } from "../../hooks/useProfileImage";
 import useAuthSync from "../../hooks/useAuthSync";
-import { Link } from "react-router-dom";
 
 const UserCard = ({user}) => {
 
@@ -17,11 +16,11 @@ const UserCard = ({user}) => {
     useAuthSync({user : state.user, setUser, setIsAuthenticated});
 
     // backend does not return a valid JSON ????
-    const sendFriendRequest = async (id) => {
+    const sendFriendRequest = async () => {
 
         try{
     
-            const data = await authFetch(`http://localhost:8080/api/friends/request?senderId=${user.id}&receiverId=${id}`,{
+            const data = await authFetch(`http://localhost:8080/api/friends/request?senderId=${state.user.id}&receiverId=${user.id}`,{
                 method : 'POST',
                 headers : {
                     "Content-Type" : "application/json"
@@ -102,7 +101,7 @@ const UserCard = ({user}) => {
                                 alignItems: "center",
                                 gap: "6px"
                             }}
-                            onClick={() => sendFriendRequest(user.id)}
+                            onClick={() => sendFriendRequest()}
                             title="Send Friend Request"
                         >
                             <i className="fas fa-user-plus"></i> Add

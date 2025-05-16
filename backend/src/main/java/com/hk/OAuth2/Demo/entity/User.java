@@ -1,5 +1,6 @@
 package com.hk.OAuth2.Demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -77,9 +78,11 @@ public class User {
     private LocalDateTime verificationCodeSentAt;
 
     @OneToMany(mappedBy = "sender" , cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Friendships> sendRequests = new ArrayList<>();
 
     @OneToMany(mappedBy = "receiver" , cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Friendships> receiveRequests = new ArrayList<>();
 
     public User() {
