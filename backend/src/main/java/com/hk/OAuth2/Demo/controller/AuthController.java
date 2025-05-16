@@ -85,7 +85,22 @@ public class AuthController {
         LocalDateTime expiryTime = LocalDateTime.now().plusHours(24);
         User user = userService.saveUserForTraditionalLogin(userSignUpDto.getUsername() , userSignUpDto.getEmail() , userSignUpDto.getPassword(), token , expiryTime,userSignUpDto.getPhoneNumber());
 
-        emailService.sendEmail(userSignUpDto.getEmail() , "Verify your email", "Click the link to verify your email: http://localhost:3000/verify?token=" + token);
+        String verificationLink = "http://localhost:3000/verify?token=" + token;
+        String htmlBody = "<!DOCTYPE html>" +
+                "<html>" +
+                "<body style='font-family: Arial, sans-serif;'>" +
+                "<h2>Email Verification</h2>" +
+                "<p>Hi <strong>" + userSignUpDto.getUsername() + "</strong>,</p>" +
+                "<p>Please verify your email by clicking the link below:</p>" +
+                "<p style='text-align:center;'>" +
+                "<a href='" + verificationLink + "' " +
+                "style='padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px;'>Verify Email</a>" +
+                "</p>" +
+                "<p>If that doesn't work, copy and paste this link into your browser:</p>" +
+                "<p><a href='" + verificationLink + "'>" + verificationLink + "</a></p>" +
+                "</body>" +
+                "</html>";
+        emailService.sendEmail(userSignUpDto.getEmail(),"Verify your email",htmlBody);
         response.put("message", "Registration successful. Check your email for verification.");
         return ResponseEntity.ok(response);
     }

@@ -19,7 +19,7 @@ public class EmailService {
 
         Email from = new Email("korogluh27@gmail.com");
         Email to = new Email(toEmail);
-        Content content = new Content("text/plain", body);
+        Content content = new Content("text/html", body);
         Mail mail = new Mail(from, subject, to, content);
 
         SendGrid sg = new SendGrid(sendgridApiKey);
