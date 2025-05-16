@@ -296,6 +296,42 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
+    // to get the updated user
+    @GetMapping("/me")
+    public ResponseEntity<?> me() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailAddress = (String) authentication.getPrincipal();
+        User user = userService.findByEmail(emailAddress);
+
+        Map<String,Object> response = new HashMap<>();
+
+        if(user == null) {
+            response.put("error", "User not found.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        response.put("id", user.getId());
+        response.put("email", user.getEmail());
+        response.put("name", user.getUsername());
+        response.put("roles", user.getRoles());
+        response.put("is_banned", user.isBanned());
+        response.put("picture_visible", user.isProfilePictureVisible());
+        response.put("local_picture", user.getLocalPicture());
+        response.put("verified", user.getVerified());
+
+        if (user.getProvider() != null) {
+            response.put("provider", user.getProvider());
+            response.put("oauth2Id", user.getOauth2Id());
+            response.put("picture", user.getPicture());
+        } else {
+            response.put("failed_attempts", user.getFailedAttempts());
+            response.put("phone", user.getPhoneNumber());
+            response.put("phone_verified", user.getPhoneVerified());
+        }
+
+        return ResponseEntity.ok().body(response);
+    }
+
     public void deleteLocalProfileImage(User user){
         String profilePicture = user.getLocalPicture();
         if(profilePicture != null) {
