@@ -132,6 +132,13 @@ const HomePage = () => {
                     </button>
                   )}
 
+                  <button
+                    className="btn btn-success btn-lg w-100 mt-3"
+                    onClick={() => navigate("/playchess")}
+                  >
+                    <i className="fas fa-chess me-2"></i> Play Chess
+                  </button>
+
                 </div>
               </div>
         ) : (

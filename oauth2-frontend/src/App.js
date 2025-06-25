@@ -18,6 +18,7 @@ import VerifyPhoneNumberPage from './screens/auth/PhoneNumberFlow/VerifyPhoneNum
 import AddPhoneNumberPage from './screens/auth/PhoneNumberFlow/AddPhoneNumber';
 import ContentPage from './screens/content/ContentPage';
 import FriendsPage from './screens/social/Friends';
+import ChessGamePage from './chess/ChessGamePage';
 import { Navbar } from './Navbar';
 import { Provider as UserProvider } from './context/UserContext';
 
@@ -48,6 +49,7 @@ function App() {
           <Route path="/add-phone-number" element={<AddPhoneNumberPage />}/>
           <Route path="/content" element={<ContentPage />}/>
           <Route path="/friends" element={<FriendsPage />}/>
+          <Route path="/playchess" element={<ChessGamePage />}/>
         </Routes>
       </Router>
     </UserProvider>
