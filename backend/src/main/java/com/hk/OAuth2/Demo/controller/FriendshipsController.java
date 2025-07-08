@@ -1,10 +1,13 @@
 package com.hk.OAuth2.Demo.controller;
 
+import com.hk.OAuth2.Demo.dto.FriendshipDto;
 import com.hk.OAuth2.Demo.entity.Friendships;
+import com.hk.OAuth2.Demo.entity.User;
 import com.hk.OAuth2.Demo.service.FriendshipsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +24,6 @@ public class FriendshipsController {
 
 
     // return json from endpoints
-
 
     @PostMapping("/request")
     public ResponseEntity<Map<String,Object>> sendFriendRequest(@RequestParam Long senderId,@RequestParam Long receiverId){
@@ -55,15 +57,81 @@ public class FriendshipsController {
     }
 
     @GetMapping("/friends-list")
-    public ResponseEntity<List<Friendships>> getFriendsList(@RequestParam Long userId) {
+    public ResponseEntity<List<FriendshipDto>> getFriendsList(@RequestParam Long userId) {
+
+        List<FriendshipDto> friendshipDtos = new ArrayList<>();
+
         List<Friendships> friendsList = friendshipsService.getFriends(userId);
-        return ResponseEntity.ok(friendsList);
+
+        for(Friendships f : friendsList){
+            User receiver = f.getReceiver();
+            User sender = f.getSender();
+            FriendshipDto friendshipDto = new FriendshipDto(
+                    f.getStatus(),
+                    f.getCreatedAt(),
+                    f.getId(),
+                    receiver.getId(),
+                    receiver.isBanned(),
+                    receiver.getEmail(),
+                    receiver.getLocalPicture(),
+                    receiver.getOauth2Id(),
+                    receiver.getPhoneNumber(),
+                    receiver.getPicture(),
+                    receiver.isProfilePictureVisible(),
+                    receiver.getProvider(),
+                    sender.getId(),
+                    sender.isBanned(),
+                    sender.getEmail(),
+                    sender.getLocalPicture(),
+                    sender.getOauth2Id(),
+                    sender.getPhoneNumber(),
+                    sender.getPicture(),
+                    sender.isProfilePictureVisible(),
+                    sender.getProvider()
+            );
+            friendshipDtos.add(friendshipDto);
+        }
+
+        return ResponseEntity.ok().body(friendshipDtos);
     }
 
     @GetMapping("/pending")
-    public ResponseEntity<List<Friendships>> getPendingFriendsList(@RequestParam Long userId) {
+    public ResponseEntity<List<FriendshipDto>> getPendingFriendsList(@RequestParam Long userId) {
+
+        List<FriendshipDto> pendingFriendshipRequests = new ArrayList<>();
+
         List<Friendships> pendingList = friendshipsService.getPendingRequests(userId);
-        return ResponseEntity.ok(pendingList);
+
+        for(Friendships f : pendingList){
+            User receiver = f.getReceiver();
+            User sender = f.getSender();
+            FriendshipDto friendshipDto = new FriendshipDto(
+                    f.getStatus(),
+                    f.getCreatedAt(),
+                    f.getId(),
+                    receiver.getId(),
+                    receiver.isBanned(),
+                    receiver.getEmail(),
+                    receiver.getLocalPicture(),
+                    receiver.getOauth2Id(),
+                    receiver.getPhoneNumber(),
+                    receiver.getPicture(),
+                    receiver.isProfilePictureVisible(),
+                    receiver.getProvider(),
+                    sender.getId(),
+                    sender.isBanned(),
+                    sender.getEmail(),
+                    sender.getLocalPicture(),
+                    sender.getOauth2Id(),
+                    sender.getPhoneNumber(),
+                    sender.getPicture(),
+                    sender.isProfilePictureVisible(),
+                    sender.getProvider()
+            );
+            pendingFriendshipRequests.add(friendshipDto);
+        }
+
+        return ResponseEntity.ok().body(pendingFriendshipRequests);
     }
 
 }
