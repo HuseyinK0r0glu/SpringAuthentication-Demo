@@ -67,16 +67,74 @@ public class FriendshipsController {
     }
 
     @PostMapping("/accept")
-    public ResponseEntity<Friendships> acceptFriendRequest(@RequestParam Long requestId){
+    public ResponseEntity<?> acceptFriendRequest(@RequestParam Long requestId){
         Friendships friendships = friendshipsService.acceptFriendRequest(requestId);
-        return ResponseEntity.ok(friendships);
+        Map<String,Object> response = new HashMap<>();
+        response.put("result","friendship accepted");
+        User receiver = friendships.getReceiver();
+        User sender = friendships.getSender();
+        FriendshipDto friendshipDto = new FriendshipDto(
+                friendships.getStatus(),
+                friendships.getCreatedAt(),
+                friendships.getId(),
+                receiver.getUsername(),
+                receiver.getId(),
+                receiver.isBanned(),
+                receiver.getEmail(),
+                receiver.getLocalPicture(),
+                receiver.getOauth2Id(),
+                receiver.getPhoneNumber(),
+                receiver.getPicture(),
+                receiver.isProfilePictureVisible(),
+                receiver.getProvider(),
+                sender.getUsername(),
+                sender.getId(),
+                sender.isBanned(),
+                sender.getEmail(),
+                sender.getLocalPicture(),
+                sender.getOauth2Id(),
+                sender.getPhoneNumber(),
+                sender.getPicture(),
+                sender.isProfilePictureVisible(),
+                sender.getProvider()
+        );
+        response.put("response",friendshipDto);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/reject")
     public ResponseEntity<?> rejectFriendRequest(@RequestParam Long requestId){
-        friendshipsService.rejectFriendRequest(requestId);
-        Map<String,String> response = new HashMap<>();
-        response.put("message","Friend request rejected");
+        Friendships friendships = friendshipsService.rejectFriendRequest(requestId);
+        Map<String,Object> response = new HashMap<>();
+        response.put("result","Friend request rejected");
+        User receiver = friendships.getReceiver();
+        User sender = friendships.getSender();
+        FriendshipDto friendshipDto = new FriendshipDto(
+                friendships.getStatus(),
+                friendships.getCreatedAt(),
+                friendships.getId(),
+                receiver.getUsername(),
+                receiver.getId(),
+                receiver.isBanned(),
+                receiver.getEmail(),
+                receiver.getLocalPicture(),
+                receiver.getOauth2Id(),
+                receiver.getPhoneNumber(),
+                receiver.getPicture(),
+                receiver.isProfilePictureVisible(),
+                receiver.getProvider(),
+                sender.getUsername(),
+                sender.getId(),
+                sender.isBanned(),
+                sender.getEmail(),
+                sender.getLocalPicture(),
+                sender.getOauth2Id(),
+                sender.getPhoneNumber(),
+                sender.getPicture(),
+                sender.isProfilePictureVisible(),
+                sender.getProvider()
+        );
+        response.put("response",friendshipDto);
         return ResponseEntity.ok().body(response);
     }
 
@@ -94,6 +152,7 @@ public class FriendshipsController {
                     f.getStatus(),
                     f.getCreatedAt(),
                     f.getId(),
+                    receiver.getUsername(),
                     receiver.getId(),
                     receiver.isBanned(),
                     receiver.getEmail(),
@@ -103,6 +162,7 @@ public class FriendshipsController {
                     receiver.getPicture(),
                     receiver.isProfilePictureVisible(),
                     receiver.getProvider(),
+                    sender.getUsername(),
                     sender.getId(),
                     sender.isBanned(),
                     sender.getEmail(),
@@ -135,6 +195,7 @@ public class FriendshipsController {
                     f.getStatus(),
                     f.getCreatedAt(),
                     f.getId(),
+                    receiver.getUsername(),
                     receiver.getId(),
                     receiver.isBanned(),
                     receiver.getEmail(),
@@ -144,6 +205,7 @@ public class FriendshipsController {
                     receiver.getPicture(),
                     receiver.isProfilePictureVisible(),
                     receiver.getProvider(),
+                    sender.getUsername(),
                     sender.getId(),
                     sender.isBanned(),
                     sender.getEmail(),

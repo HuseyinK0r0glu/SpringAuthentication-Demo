@@ -46,12 +46,14 @@ public class FriendshipsService {
         return friendshipsRepository.save(friendship);
     }
 
-    public void rejectFriendRequest(Long requestId) {
+    public Friendships rejectFriendRequest(Long requestId) {
 
         Friendships friendship = friendshipsRepository.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request not found"));
 
         friendshipsRepository.deleteById(requestId);
+
+        return friendship;
     }
 
     public List<Friendships> getFriends(Long userId) {
