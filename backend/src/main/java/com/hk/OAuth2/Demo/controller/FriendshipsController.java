@@ -66,11 +66,7 @@ public class FriendshipsController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("/accept")
-    public ResponseEntity<?> acceptFriendRequest(@RequestParam Long requestId){
-        Friendships friendships = friendshipsService.acceptFriendRequest(requestId);
-        Map<String,Object> response = new HashMap<>();
-        response.put("result","friendship accepted");
+    public FriendshipDto getFriendshipDto(Friendships friendships){
         User receiver = friendships.getReceiver();
         User sender = friendships.getSender();
         FriendshipDto friendshipDto = new FriendshipDto(
@@ -98,6 +94,15 @@ public class FriendshipsController {
                 sender.isProfilePictureVisible(),
                 sender.getProvider()
         );
+        return friendshipDto;
+    }
+
+    @PostMapping("/accept")
+    public ResponseEntity<?> acceptFriendRequest(@RequestParam Long requestId){
+        Friendships friendships = friendshipsService.acceptFriendRequest(requestId);
+        Map<String,Object> response = new HashMap<>();
+        response.put("result","friendship accepted");
+        FriendshipDto friendshipDto = getFriendshipDto(friendships);
         response.put("response",friendshipDto);
         return ResponseEntity.ok(response);
     }
@@ -107,33 +112,7 @@ public class FriendshipsController {
         Friendships friendships = friendshipsService.rejectFriendRequest(requestId);
         Map<String,Object> response = new HashMap<>();
         response.put("result","Friend request rejected");
-        User receiver = friendships.getReceiver();
-        User sender = friendships.getSender();
-        FriendshipDto friendshipDto = new FriendshipDto(
-                friendships.getStatus(),
-                friendships.getCreatedAt(),
-                friendships.getId(),
-                receiver.getUsername(),
-                receiver.getId(),
-                receiver.isBanned(),
-                receiver.getEmail(),
-                receiver.getLocalPicture(),
-                receiver.getOauth2Id(),
-                receiver.getPhoneNumber(),
-                receiver.getPicture(),
-                receiver.isProfilePictureVisible(),
-                receiver.getProvider(),
-                sender.getUsername(),
-                sender.getId(),
-                sender.isBanned(),
-                sender.getEmail(),
-                sender.getLocalPicture(),
-                sender.getOauth2Id(),
-                sender.getPhoneNumber(),
-                sender.getPicture(),
-                sender.isProfilePictureVisible(),
-                sender.getProvider()
-        );
+        FriendshipDto friendshipDto = getFriendshipDto(friendships);
         response.put("response",friendshipDto);
         return ResponseEntity.ok().body(response);
     }
@@ -145,34 +124,8 @@ public class FriendshipsController {
 
         List<Friendships> friendsList = friendshipsService.getFriends(userId);
 
-        for(Friendships f : friendsList){
-            User receiver = f.getReceiver();
-            User sender = f.getSender();
-            FriendshipDto friendshipDto = new FriendshipDto(
-                    f.getStatus(),
-                    f.getCreatedAt(),
-                    f.getId(),
-                    receiver.getUsername(),
-                    receiver.getId(),
-                    receiver.isBanned(),
-                    receiver.getEmail(),
-                    receiver.getLocalPicture(),
-                    receiver.getOauth2Id(),
-                    receiver.getPhoneNumber(),
-                    receiver.getPicture(),
-                    receiver.isProfilePictureVisible(),
-                    receiver.getProvider(),
-                    sender.getUsername(),
-                    sender.getId(),
-                    sender.isBanned(),
-                    sender.getEmail(),
-                    sender.getLocalPicture(),
-                    sender.getOauth2Id(),
-                    sender.getPhoneNumber(),
-                    sender.getPicture(),
-                    sender.isProfilePictureVisible(),
-                    sender.getProvider()
-            );
+        for(Friendships friendships : friendsList){
+            FriendshipDto friendshipDto = getFriendshipDto(friendships);
             friendshipDtos.add(friendshipDto);
         }
 
@@ -188,34 +141,8 @@ public class FriendshipsController {
 
         List<Friendships> pendingList = friendshipsService.getPendingRequests(userId);
 
-        for(Friendships f : pendingList){
-            User receiver = f.getReceiver();
-            User sender = f.getSender();
-            FriendshipDto friendshipDto = new FriendshipDto(
-                    f.getStatus(),
-                    f.getCreatedAt(),
-                    f.getId(),
-                    receiver.getUsername(),
-                    receiver.getId(),
-                    receiver.isBanned(),
-                    receiver.getEmail(),
-                    receiver.getLocalPicture(),
-                    receiver.getOauth2Id(),
-                    receiver.getPhoneNumber(),
-                    receiver.getPicture(),
-                    receiver.isProfilePictureVisible(),
-                    receiver.getProvider(),
-                    sender.getUsername(),
-                    sender.getId(),
-                    sender.isBanned(),
-                    sender.getEmail(),
-                    sender.getLocalPicture(),
-                    sender.getOauth2Id(),
-                    sender.getPhoneNumber(),
-                    sender.getPicture(),
-                    sender.isProfilePictureVisible(),
-                    sender.getProvider()
-            );
+        for(Friendships friendships : pendingList){
+            FriendshipDto friendshipDto = getFriendshipDto(friendships);
             pendingFriendshipRequests.add(friendshipDto);
         }
 
