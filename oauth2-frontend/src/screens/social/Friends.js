@@ -1,4 +1,4 @@
-import React, { useState , useContext } from "react";
+import { useState , useContext , useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../../components/ApiClient";
 import { Context as UserContext } from "../../context/UserContext";
@@ -11,11 +11,10 @@ const UserCard = ({user}) => {
     const navigate = useNavigate();
 
     const {state,setUser,logout} = useContext(UserContext);
-    const[isAuthenticated,setIsAuthenticated] = useState(false);
+    const [isAuthenticated,setIsAuthenticated] = useState(false);
 
     useAuthSync({user : state.user, setUser, setIsAuthenticated});
 
-    // backend does not return a valid JSON ????
     const sendFriendRequest = async () => {
 
         try{
@@ -100,10 +99,32 @@ const FriendsPage = () => {
 
     const navigate = useNavigate();
 
-    const {logout} = useContext(UserContext);
-
     const [query,setQuery] = useState("");
     const [results,setResults] = useState([]);
+
+    const {state,logout} = useContext(UserContext);
+    const [isAuthenticated,setIsAuthenticated] = useState(false);
+    // getting friends when we first open the site and put them in localStorage could be choosen based on the performance and space trade of !!  
+    const [friends,setFriends] = useState([])
+
+    useEffect(() => {
+        getFriends();
+    }, [isAuthenticated,state.user]);
+
+    useEffect(() => {
+        getFriends();
+    },[]);
+
+    const getFriends = async () => {
+        
+        const data = await authFetch(`http://localhost:8080/api/friends/friends-list?userId=${state.user.id}`,{
+            method : 'GET',
+        },true);
+
+        console.log("get the friends" , data)
+
+    };
+
 
     const handleChange = async (e) => {
         e.preventDefault();
