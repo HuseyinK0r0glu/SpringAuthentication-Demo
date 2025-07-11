@@ -118,7 +118,9 @@ public class FriendshipsController {
     }
 
     @GetMapping("/friends-list")
-    public ResponseEntity<List<FriendshipDto>> getFriendsList(@RequestParam Long userId) {
+    public ResponseEntity<?> getFriendsList(@RequestParam Long userId) {
+
+        Map<String,Object> response = new HashMap<>();
 
         List<FriendshipDto> friendshipDtos = new ArrayList<>();
 
@@ -129,7 +131,9 @@ public class FriendshipsController {
             friendshipDtos.add(friendshipDto);
         }
 
-        return ResponseEntity.ok().body(friendshipDtos);
+        response.put("response",friendshipDtos);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/pending")

@@ -46,6 +46,7 @@ public class FriendshipsService {
         return friendshipsRepository.save(friendship);
     }
 
+    // here it deletes the frienships from db this could change
     public Friendships rejectFriendRequest(Long requestId) {
 
         Friendships friendship = friendshipsRepository.findById(requestId)
@@ -61,7 +62,11 @@ public class FriendshipsService {
         if(user == null){
             throw new RuntimeException("User not found");
         }
-        return friendshipsRepository.findBySenderOrReceiverAndStatus(user,user,"ACCEPTED");
+        List<Friendships> sent =  friendshipsRepository.findBySenderAndStatus(user, "ACCEPTED");
+        List<Friendships>  received = friendshipsRepository.findByReceiverAndStatus(user, "ACCEPTED");
+
+        sent.addAll(received);
+        return sent;
     }
 
     public List<Friendships> getPendingRequests(Long userId) {

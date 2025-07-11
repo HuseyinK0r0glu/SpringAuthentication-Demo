@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface FriendshipsRepository extends JpaRepository<Friendships, Long> {
 
-    List<Friendships> findBySenderOrReceiverAndStatus(User sender, User receiver, String status);
+    List<Friendships> findBySenderAndStatus(User user, String status);
     List<Friendships> findByReceiverAndStatus(User receiver, String status);
     Friendships findById(long id);
     void deleteById(long id);
