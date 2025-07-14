@@ -7,7 +7,6 @@ import com.hk.OAuth2.Demo.service.FriendshipsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,32 +28,31 @@ public class FriendshipsController {
         Map<String,Object> response = new HashMap<>();
 
         // 1. Check if there's already a pending request *from sender to receiver
-        List<Friendships> pendingRequests = friendshipsService.getPendingRequests(receiverId);
-        for(Friendships f : pendingRequests){
-            if(f.getSender().getId().equals(senderId)){
+        List<FriendshipDto> pendingRequests = friendshipsService.getPendingRequests(receiverId);
+        for(FriendshipDto f : pendingRequests){
+            if(f.getSenderId().equals(senderId)){
                 response.put("error","Request already sent");
                 return ResponseEntity.badRequest().body(response);
             }
         }
 
         // 2. Check if there's already a pending request *from receiver to sender
-        List<Friendships> pendingRequestsForSender =  friendshipsService.getPendingRequests(senderId);
-        for(Friendships f : pendingRequestsForSender){
-            if(f.getSender().getId().equals(receiverId)){
+        List<FriendshipDto> pendingRequestsForSender =  friendshipsService.getPendingRequests(senderId);
+        for(FriendshipDto f : pendingRequestsForSender){
+            if(f.getSenderId().equals(receiverId)){
                 response.put("error", "You already have a request from this user");
                 return ResponseEntity.badRequest().body(response);
             }
         }
 
         // 3. Check if they are already friends
-        List<Friendships> friends =  friendshipsService.getFriends(receiverId);
-        for(Friendships f : friends){
-            if(f.getSender().getId().equals(senderId) &&  f.getReceiver().getId().equals(receiverId)){
+        List<FriendshipDto> friends =  friendshipsService.getFriends(receiverId);
+        for(FriendshipDto f : friends){
+            if(f.getSenderId().equals(senderId) &&  f.getReceiverId().equals(receiverId)){
                 response.put("error", "You are already friends");
                 return ResponseEntity.badRequest().body(response);
             }
-
-            if(f.getSender().getId().equals(receiverId) &&  f.getReceiver().getId().equals(senderId)){
+            if(f.getSenderId().equals(receiverId) &&  f.getReceiverId().equals(senderId)){
                 response.put("error", "You are already friends");
                 return ResponseEntity.badRequest().body(response);
             }
@@ -66,43 +64,12 @@ public class FriendshipsController {
         return ResponseEntity.ok().body(response);
     }
 
-    public FriendshipDto getFriendshipDto(Friendships friendships){
-        User receiver = friendships.getReceiver();
-        User sender = friendships.getSender();
-        FriendshipDto friendshipDto = new FriendshipDto(
-                friendships.getStatus(),
-                friendships.getCreatedAt(),
-                friendships.getId(),
-                receiver.getUsername(),
-                receiver.getId(),
-                receiver.isBanned(),
-                receiver.getEmail(),
-                receiver.getLocalPicture(),
-                receiver.getOauth2Id(),
-                receiver.getPhoneNumber(),
-                receiver.getPicture(),
-                receiver.isProfilePictureVisible(),
-                receiver.getProvider(),
-                sender.getUsername(),
-                sender.getId(),
-                sender.isBanned(),
-                sender.getEmail(),
-                sender.getLocalPicture(),
-                sender.getOauth2Id(),
-                sender.getPhoneNumber(),
-                sender.getPicture(),
-                sender.isProfilePictureVisible(),
-                sender.getProvider()
-        );
-        return friendshipDto;
-    }
-
     @PostMapping("/accept")
     public ResponseEntity<?> acceptFriendRequest(@RequestParam Long requestId){
         Friendships friendships = friendshipsService.acceptFriendRequest(requestId);
         Map<String,Object> response = new HashMap<>();
         response.put("result","friendship accepted");
-        FriendshipDto friendshipDto = getFriendshipDto(friendships);
+        FriendshipDto friendshipDto = friendshipsService.getFriendshipDto(friendships);
         response.put("response",friendshipDto);
         return ResponseEntity.ok(response);
     }
@@ -112,47 +79,24 @@ public class FriendshipsController {
         Friendships friendships = friendshipsService.rejectFriendRequest(requestId);
         Map<String,Object> response = new HashMap<>();
         response.put("result","Friend request rejected");
-        FriendshipDto friendshipDto = getFriendshipDto(friendships);
+        FriendshipDto friendshipDto = friendshipsService.getFriendshipDto(friendships);
         response.put("response",friendshipDto);
         return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/friends-list")
     public ResponseEntity<?> getFriendsList(@RequestParam Long userId) {
-
         Map<String,Object> response = new HashMap<>();
-
-        List<FriendshipDto> friendshipDtos = new ArrayList<>();
-
-        List<Friendships> friendsList = friendshipsService.getFriends(userId);
-
-        for(Friendships friendships : friendsList){
-            FriendshipDto friendshipDto = getFriendshipDto(friendships);
-            friendshipDtos.add(friendshipDto);
-        }
-
+        List<FriendshipDto> friendshipDtos = friendshipsService.getFriends(userId);
         response.put("response",friendshipDtos);
-
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/pending")
     public ResponseEntity<?> getPendingFriendsList(@RequestParam Long userId) {
-
         Map<String,Object> response = new HashMap<>();
-
-        List<FriendshipDto> pendingFriendshipRequests = new ArrayList<>();
-
-        List<Friendships> pendingList = friendshipsService.getPendingRequests(userId);
-
-        for(Friendships friendships : pendingList){
-            FriendshipDto friendshipDto = getFriendshipDto(friendships);
-            pendingFriendshipRequests.add(friendshipDto);
-        }
-
-        response.put("response",pendingFriendshipRequests);
-
+        List<FriendshipDto> pendingFriendshipDtos = friendshipsService.getPendingRequests(userId);
+        response.put("response",pendingFriendshipDtos);
         return ResponseEntity.ok(response);
     }
-
 }

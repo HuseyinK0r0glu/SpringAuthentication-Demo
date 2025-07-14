@@ -1,10 +1,12 @@
 package com.hk.OAuth2.Demo.service;
 
+import com.hk.OAuth2.Demo.dto.FriendshipDto;
 import com.hk.OAuth2.Demo.entity.Friendships;
 import com.hk.OAuth2.Demo.entity.User;
 import com.hk.OAuth2.Demo.repository.FriendshipsRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,6 +18,37 @@ public class FriendshipsService {
     public FriendshipsService(FriendshipsRepository friendshipsRepository, UserService userService) {
         this.friendshipsRepository = friendshipsRepository;
         this.userService = userService;
+    }
+
+    public FriendshipDto getFriendshipDto(Friendships friendships){
+        User receiver = friendships.getReceiver();
+        User sender = friendships.getSender();
+        FriendshipDto friendshipDto = new FriendshipDto(
+                friendships.getStatus(),
+                friendships.getCreatedAt(),
+                friendships.getId(),
+                receiver.getUsername(),
+                receiver.getId(),
+                receiver.isBanned(),
+                receiver.getEmail(),
+                receiver.getLocalPicture(),
+                receiver.getOauth2Id(),
+                receiver.getPhoneNumber(),
+                receiver.getPicture(),
+                receiver.isProfilePictureVisible(),
+                receiver.getProvider(),
+                sender.getUsername(),
+                sender.getId(),
+                sender.isBanned(),
+                sender.getEmail(),
+                sender.getLocalPicture(),
+                sender.getOauth2Id(),
+                sender.getPhoneNumber(),
+                sender.getPicture(),
+                sender.isProfilePictureVisible(),
+                sender.getProvider()
+        );
+        return friendshipDto;
     }
 
     public Friendships sendFriendRequest(Long senderId , Long receiverId) {
@@ -57,7 +90,7 @@ public class FriendshipsService {
         return friendship;
     }
 
-    public List<Friendships> getFriends(Long userId) {
+    public List<FriendshipDto> getFriends(Long userId) {
         User user = userService.findById(userId);
         if(user == null){
             throw new RuntimeException("User not found");
@@ -66,15 +99,31 @@ public class FriendshipsService {
         List<Friendships>  received = friendshipsRepository.findByReceiverAndStatus(user, "ACCEPTED");
 
         sent.addAll(received);
-        return sent;
+
+        List<FriendshipDto> friendshipDtos = new ArrayList<>();
+
+        for(Friendships friendships : sent){
+            FriendshipDto friendshipDto = getFriendshipDto(friendships);
+            friendshipDtos.add(friendshipDto);
+        }
+
+        return friendshipDtos;
     }
 
-    public List<Friendships> getPendingRequests(Long userId) {
+    public List<FriendshipDto> getPendingRequests(Long userId) {
         User user = userService.findById(userId);
         if(user == null){
             throw new RuntimeException("User not found");
         }
-        return friendshipsRepository.findByReceiverAndStatus(user,"PENDING");
-    }
 
+        List<FriendshipDto> pendingRequestDtos = new ArrayList<>();
+        List<Friendships> pendingList = friendshipsRepository.findByReceiverAndStatus(user,"PENDING");
+
+        for(Friendships friendships : pendingList){
+            FriendshipDto friendshipDto = getFriendshipDto(friendships);
+            pendingRequestDtos.add(friendshipDto);
+        }
+
+        return pendingRequestDtos;
+    }
 }
