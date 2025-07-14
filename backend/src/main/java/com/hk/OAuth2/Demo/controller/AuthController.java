@@ -6,6 +6,7 @@ import com.hk.OAuth2.Demo.entity.User;
 import com.hk.OAuth2.Demo.jwt.JWTUtil;
 import com.hk.OAuth2.Demo.repository.PasswordResetTokenRepository;
 import com.hk.OAuth2.Demo.service.EmailService;
+import com.hk.OAuth2.Demo.service.FriendshipsService;
 import com.hk.OAuth2.Demo.service.PasswordValidationService;
 import com.hk.OAuth2.Demo.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -34,8 +35,9 @@ public class AuthController {
     private final PasswordValidationService passwordValidationService;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final JWTUtil jwtUtil;
+    private final FriendshipsService friendshipsService;
 
-    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder, PasswordValidationService passwordValidationService, PasswordResetTokenRepository passwordResetTokenRepository,JWTUtil jwtUtil) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager, EmailService emailService, PasswordEncoder passwordEncoder, PasswordValidationService passwordValidationService, PasswordResetTokenRepository passwordResetTokenRepository,JWTUtil jwtUtil,FriendshipsService friendshipsService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.emailService = emailService;
@@ -43,6 +45,7 @@ public class AuthController {
         this.passwordValidationService = passwordValidationService;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.jwtUtil = jwtUtil;
+        this.friendshipsService = friendshipsService;
     }
 
     @PostMapping("/signup")
@@ -350,6 +353,9 @@ public class AuthController {
 
             user.setFailedAttempts(0);
             userService.save(user);
+
+            List<FriendshipDto> friends = friendshipsService.getFriends(user.getId());
+            List<FriendshipDto> pendingRequests = friendshipsService.getPendingRequests(user.getId());
             
             String token = jwtUtil.generateToken(user.getEmail(),user.getRoles(),loginRequest.isRememberMe());
             // send jwt token to frontend
@@ -366,6 +372,8 @@ public class AuthController {
             response.put("phone_verified",user.getPhoneVerified());
             response.put("picture_visible",user.isProfilePictureVisible());
             response.put("is_banned",user.isBanned());
+            response.put("friends",friends);
+            response.put("pending_requests",pendingRequests);
 
             return ResponseEntity.ok(response);
 
@@ -438,6 +446,10 @@ public class AuthController {
 
         // Return user details as JSON for frontend
         Map<String,Object> response = new HashMap<>();
+
+        List<FriendshipDto> friends = friendshipsService.getFriends(user.getId());
+        List<FriendshipDto> pendingRequests = friendshipsService.getPendingRequests(user.getId());
+
         response.put("id" , user.getId());
         response.put("name" , user.getUsername());
         response.put("email" , user.getEmail());
@@ -451,6 +463,8 @@ public class AuthController {
         }
         response.put("picture_visible",user.isProfilePictureVisible());
         response.put("is_banned",user.isBanned());
+        response.put("friends",friends);
+        response.put("pending_requests",pendingRequests);
 
         return ResponseEntity.ok(response);
     }
