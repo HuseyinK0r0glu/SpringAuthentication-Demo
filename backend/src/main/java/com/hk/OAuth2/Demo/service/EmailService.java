@@ -17,7 +17,7 @@ public class EmailService {
 
     public void sendEmail(String toEmail, String subject, String body) throws IOException {
 
-        Email from = new Email("korogluh27@gmail.com");
+        Email from = new Email("2004hk271620@gmail.com");
         Email to = new Email(toEmail);
         Content content = new Content("text/html", body);
         Mail mail = new Mail(from, subject, to, content);
@@ -30,9 +30,29 @@ public class EmailService {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             Response response = sg.api(request);
-            System.out.println("Email sent successfully. Response Code: " + response.getStatusCode());
+
+            System.out.println("===== SENDGRID EMAIL RESPONSE =====");
+            System.out.println("Status Code: " + response.getStatusCode());
+
+            if (response.getBody() != null && !response.getBody().isEmpty()) {
+                System.out.println("Response Body: " + response.getBody());
+            }
+
+            System.out.println("Response Headers:");
+            response.getHeaders().forEach((key, value) -> {
+                System.out.println(key + ": " + value);
+            });
+
+            if (response.getStatusCode() >= 200 && response.getStatusCode() < 300) {
+                System.out.println("Email sent successfully. Response Code: " + response.getStatusCode());
+            } else {
+                System.err.println("Failed to send email. Status: " + response.getStatusCode());
+            }
+
         }catch (IOException e){
-            System.out.println("Email sent failed");
+            System.out.println("Email send failed");
+            System.err.println("IOException while sending email:");
+            e.printStackTrace();
             throw e;
         }
     }
