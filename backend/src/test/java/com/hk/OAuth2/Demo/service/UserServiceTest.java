@@ -8,8 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
@@ -49,5 +48,72 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    public void testFindByUsernameReturnsCorrectUser() {
+
+        String username = "Hüseyin";
+        String email = "hüseyin@example.com";
+
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail(email);
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
+
+        User result = userService.findByUsername(username);
+
+        assertNotNull(result);
+        assertEquals(username, result.getUsername());
+        assertEquals(email, result.getEmail());
+        verify(userRepository,times(1)).findByUsername(username);
+
+    }
+
+    @Test
+    public void testFindByUsernanmeReturnsNullWhenNotFound() {
+
+        String username = "NoneexistentUser";
+
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
+
+        User result = userService.findByUsername(username);
+
+        assertNull(result);
+        verify(userRepository,times(1)).findByUsername(username);
+
+    }
+
+    @Test
+    public void testFindByEmailReturnsCorrectUser() {
+
+        String username = "Hüseyin";
+        String email = "hüseyin@example.com";
+
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail(email);
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        User result = userService.findByEmail(email);
+
+        assertNotNull(result);
+        assertEquals(username, result.getUsername());
+        assertEquals(email, result.getEmail());
+        verify(userRepository,times(1)).findByEmail(email);
+    }
+
+    @Test
+    public void testFindByEmailReturnsNullWhenNotFound() {
+
+        String email = "nonexistent@example.com";
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        User result = userService.findByEmail(email);
+
+        assertNull(result);
+        verify(userRepository,times(1)).findByEmail(email);
+    }
 
 }
